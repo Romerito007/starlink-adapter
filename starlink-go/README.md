@@ -15,6 +15,7 @@ O cliente usa:
 - `Host string`
 - `Port int`
 - `Timeout time.Duration`
+- `Logger *slog.Logger` (opcional)
 
 Defaults aplicados por `NewClient` quando não informados:
 
@@ -25,7 +26,7 @@ Defaults aplicados por `NewClient` quando não informados:
 ## Construtor público
 
 ```go
-func NewClient(cfg Config) (StarlinkClient, error)
+func NewClient(ctx context.Context, cfg Config) (StarlinkClient, error)
 ```
 
 ## Operações suportadas
@@ -36,6 +37,7 @@ A interface pública `StarlinkClient` expõe somente:
 - `GetStats(ctx context.Context) (*Stats, error)`
 - `GetLocation(ctx context.Context) (*Location, error)`
 - `Reboot(ctx context.Context) error`
+- `Close() error`
 
 ## Exemplo mínimo
 
@@ -51,7 +53,7 @@ import (
 )
 
 func main() {
-	cli, err := client.NewClient(client.Config{
+	cli, err := client.NewClient(context.Background(), client.Config{
 		Host:    "192.168.100.1",
 		Port:    9200,
 		Timeout: 5 * time.Second,
@@ -59,6 +61,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+	defer cli.Close()
 
 	status, err := cli.GetStatus(context.Background())
 	if err != nil {

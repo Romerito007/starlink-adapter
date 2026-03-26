@@ -5,7 +5,7 @@ type Status struct {
 	DeviceID              string
 	HardwareVersion       string
 	SoftwareVersion       string
-	State                 string
+	UptimeSeconds         uint64
 	UplinkThroughputBps   float32
 	DownlinkThroughputBps float32
 	PopPingDropRate       float32

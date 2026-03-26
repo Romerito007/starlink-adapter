@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"log/slog"
-	"os"
 	"time"
 
 	"github.com/Romerito007/starlink-adapter/starlink-go/internal/transport/localgrpc"
@@ -17,6 +16,7 @@ type StarlinkClient interface {
 	GetStats(ctx context.Context) (*Stats, error)
 	GetLocation(ctx context.Context) (*Location, error)
 	Reboot(ctx context.Context) error
+	Close() error
 }
 
 type grpcClient struct {
@@ -33,15 +33,15 @@ func newGRPCClient(transport transport, cfg Config) *grpcClient {
 	return &grpcClient{
 		transport: transport,
 		cfg:       cfg,
-		logger:    slog.New(slog.NewJSONHandler(os.Stdout, nil)),
+		logger:    cfg.Logger,
 	}
 }
 
-func dial(ctx context.Context, address string) (*grpcClient, error) {
-	return dialWithConfig(ctx, address, defaultConfig())
-}
+func NewClient(ctx context.Context, cfg Config) (StarlinkClient, error) {
+	if ctx == nil {
+		return nil, fmt.Errorf("%w: context is required", ErrUnavailable)
+	}
 
-func NewClient(cfg Config) (StarlinkClient, error) {
 	if cfg.Host == "" {
 		cfg.Host = defaultConfig().Host
 	}
@@ -50,7 +50,7 @@ func NewClient(cfg Config) (StarlinkClient, error) {
 	}
 
 	address := fmt.Sprintf("%s:%d", cfg.Host, cfg.Port)
-	return dialWithConfig(context.Background(), address, cfg)
+	return dialWithConfig(ctx, address, cfg)
 }
 
 func dialWithConfig(ctx context.Context, address string, cfg Config) (*grpcClient, error) {
@@ -138,6 +138,9 @@ func (c *grpcClient) sendWithRetry(ctx context.Context, operation string, reqFn 
 	if c == nil || c.transport == nil {
 		return nil, fmt.Errorf("%w: transport is not configured", ErrUnavailable)
 	}
+	if ctx == nil {
+		return nil, fmt.Errorf("%w: context is required", ErrUnavailable)
+	}
 
 	const retryMax = 3
 	const baseBackoff = 200 * time.Millisecond
@@ -151,24 +154,28 @@ func (c *grpcClient) sendWithRetry(ctx context.Context, operation string, reqFn 
 		latency := time.Since(started)
 
 		if err == nil {
-			c.logger.Info("starlink operation success",
-				"host", c.transport.Host(),
-				"operation", operation,
-				"attempt", attempt,
-				"latency_ms", latency.Milliseconds(),
-			)
+			if c.logger != nil {
+				c.logger.Info("starlink operation success",
+					"host", c.transport.Host(),
+					"operation", operation,
+					"attempt", attempt,
+					"latency_ms", latency.Milliseconds(),
+				)
+			}
 			return resp, nil
 		}
 
 		nerr := normalizeError(err)
 		lastErr = nerr
-		c.logger.Warn("starlink operation failed",
-			"host", c.transport.Host(),
-			"operation", operation,
-			"attempt", attempt,
-			"latency_ms", latency.Milliseconds(),
-			"error", nerr.Error(),
-		)
+		if c.logger != nil {
+			c.logger.Warn("starlink operation failed",
+				"host", c.transport.Host(),
+				"operation", operation,
+				"attempt", attempt,
+				"latency_ms", latency.Milliseconds(),
+				"error", nerr.Error(),
+			)
+		}
 
 		if !isTransientError(nerr) || attempt == retryMax {
 			return nil, nerr
