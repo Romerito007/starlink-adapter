@@ -3,6 +3,8 @@ package client
 import (
 	"context"
 	"fmt"
+	"log/slog"
+	"os"
 	"time"
 
 	"github.com/Romerito007/starlink-adapter/starlink-go/internal/transport/localgrpc"
@@ -22,27 +24,35 @@ type StarlinkClient interface {
 type grpcClient struct {
 	transport transport
 	cfg       Config
+	logger    *slog.Logger
 }
 
 func NewGRPCClient(transport transport, cfg Config) *grpcClient {
 	if cfg.Timeout <= 0 {
-		cfg = defaultConfig()
-	}
-	if cfg.RetryMax <= 0 {
-		cfg.RetryMax = 3
-	}
-	if cfg.BaseBackoff <= 0 {
-		cfg.BaseBackoff = 200 * time.Millisecond
-	}
-	if cfg.Logger == nil {
-		cfg.Logger = defaultConfig().Logger
+		cfg.Timeout = defaultConfig().Timeout
 	}
 
-	return &grpcClient{transport: transport, cfg: cfg}
+	return &grpcClient{
+		transport: transport,
+		cfg:       cfg,
+		logger:    slog.New(slog.NewJSONHandler(os.Stdout, nil)),
+	}
 }
 
 func Dial(ctx context.Context, address string) (*grpcClient, error) {
 	return DialWithConfig(ctx, address, defaultConfig())
+}
+
+func NewClient(cfg Config) (StarlinkClient, error) {
+	if cfg.Host == "" {
+		cfg.Host = defaultConfig().Host
+	}
+	if cfg.Port <= 0 {
+		cfg.Port = defaultConfig().Port
+	}
+
+	address := fmt.Sprintf("%s:%d", cfg.Host, cfg.Port)
+	return DialWithConfig(context.Background(), address, cfg)
 }
 
 func DialWithConfig(ctx context.Context, address string, cfg Config) (*grpcClient, error) {
@@ -135,8 +145,11 @@ func (c *grpcClient) sendWithRetry(ctx context.Context, operation string, reqFn 
 		return nil, fmt.Errorf("%w: transport is not configured", ErrUnavailable)
 	}
 
+	const retryMax = 3
+	const baseBackoff = 200 * time.Millisecond
+
 	var lastErr error
-	for attempt := 1; attempt <= c.cfg.RetryMax; attempt++ {
+	for attempt := 1; attempt <= retryMax; attempt++ {
 		started := time.Now()
 		attemptCtx, cancel := context.WithTimeout(ctx, c.cfg.Timeout)
 		resp, err := c.transport.Handle(attemptCtx, reqFn())
@@ -144,7 +157,7 @@ func (c *grpcClient) sendWithRetry(ctx context.Context, operation string, reqFn 
 		latency := time.Since(started)
 
 		if err == nil {
-			c.cfg.Logger.Info("starlink operation success",
+			c.logger.Info("starlink operation success",
 				"host", c.transport.Host(),
 				"operation", operation,
 				"attempt", attempt,
@@ -155,7 +168,7 @@ func (c *grpcClient) sendWithRetry(ctx context.Context, operation string, reqFn 
 
 		nerr := normalizeError(err)
 		lastErr = nerr
-		c.cfg.Logger.Warn("starlink operation failed",
+		c.logger.Warn("starlink operation failed",
 			"host", c.transport.Host(),
 			"operation", operation,
 			"attempt", attempt,
@@ -163,13 +176,13 @@ func (c *grpcClient) sendWithRetry(ctx context.Context, operation string, reqFn 
 			"error", nerr.Error(),
 		)
 
-		if !isTransientError(nerr) || attempt == c.cfg.RetryMax {
+		if !isTransientError(nerr) || attempt == retryMax {
 			return nil, nerr
 		}
 
 		_ = c.transport.Reconnect(ctx)
 
-		backoff := c.cfg.BaseBackoff * time.Duration(1<<(attempt-1))
+		backoff := baseBackoff * time.Duration(1<<(attempt-1))
 		select {
 		case <-ctx.Done():
 			return nil, normalizeError(ctx.Err())
