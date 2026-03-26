@@ -1,6 +1,10 @@
 package client
 
-import pb "github.com/Romerito007/starlink-adapter/starlink-go/proto/gen/spacex/api/device"
+import (
+	"strconv"
+
+	pb "github.com/Romerito007/starlink-adapter/starlink-go/proto/gen/spacex/api/device"
+)
 
 func mapStatus(in *pb.DishGetStatusResponse) *Status {
 	if in == nil {
@@ -10,11 +14,16 @@ func mapStatus(in *pb.DishGetStatusResponse) *Status {
 	deviceInfo := in.GetDeviceInfo()
 	deviceState := in.GetDeviceState()
 
+	state := ""
+	if deviceState != nil {
+		state = strconv.FormatUint(deviceState.GetUptimeS(), 10)
+	}
+
 	return &Status{
 		DeviceID:              deviceInfo.GetId(),
 		HardwareVersion:       deviceInfo.GetHardwareVersion(),
 		SoftwareVersion:       deviceInfo.GetSoftwareVersion(),
-		State:                 deviceState.GetUptimeState().String(),
+		State:                 state,
 		UplinkThroughputBps:   in.GetUplinkThroughputBps(),
 		DownlinkThroughputBps: in.GetDownlinkThroughputBps(),
 		PopPingDropRate:       in.GetPopPingDropRate(),

@@ -1,54 +1,74 @@
 # starlink-go
 
-SDK Go minimalista e **somente local** para acesso à API gRPC do Starlink dish (`192.168.100.1:9200`, inclusive via VPN para a LAN).
+Módulo Go: `github.com/Romerito007/starlink-adapter/starlink-go`
 
-## Escopo do cliente
+Cliente Go para acesso **local gRPC** ao terminal Starlink (Dishy).
 
-A API pública expõe apenas operações básicas:
+## Objetivo do pacote
 
-- `GetStatus`
-- `GetStats`
-- `GetLocation`
-- `Reboot`
+Fornecer um cliente Go com API pública enxuta para operações básicas de leitura/controle da Starlink via endpoint local `host:port` (tipicamente LAN, ou VPN com alcance da LAN).
 
-Sem exposição direta de structs protobuf para o consumidor.
+## Configuração
 
-## Garantias deste SDK
+O cliente usa:
 
-- Sem cookies, sem leitura de browser, sem keychain.
-- Sem autenticação web/token/refresh.
-- Sem grpc-web e sem REST remoto.
-- Transporte único: gRPC direto (HTTP/2) para `Device.Handle`.
+- `Host string`
+- `Port int`
+- `Timeout time.Duration`
 
+Defaults aplicados por `NewClient` quando não informados:
 
-## Robustez
+- `Host`: `192.168.100.1`
+- `Port`: `9200`
+- `Timeout`: `5s`
 
-- Timeout padrão configurável (default: `5s`) por operação.
-- Retry até `3x` com exponential backoff para erros transitórios.
-- Erros normalizados: `ErrDeviceOffline`, `ErrTimeout`, `ErrUnavailable`, `ErrUnsupported`.
-- Logging estruturado com `host`, `operation` e `latency_ms`.
-- Conexão reutilizável com suporte a reconnect.
-
-## Estrutura
-
-- `client/`: interface `StarlinkClient`, modelos de domínio e implementação `grpcClient`.
-- `internal/transport/localgrpc/`: implementação de transporte gRPC local.
-- `proto/`: arquivos `.proto` do dispositivo.
-- `proto/gen/`: código Go protobuf para camada de transporte/protocolo.
-
-## Exemplo rápido
+## Construtor público
 
 ```go
-ctx := context.Background()
-cli, err := client.Dial(ctx, "")
-if err != nil {
-    panic(err)
-}
-defer cli.Close()
-
-status, err := cli.GetStatus(ctx)
-if err != nil {
-    panic(err)
-}
-fmt.Println(status.DeviceID)
+func NewClient(cfg Config) (StarlinkClient, error)
 ```
+
+## Operações suportadas
+
+A interface pública `StarlinkClient` expõe somente:
+
+- `GetStatus(ctx context.Context) (*Status, error)`
+- `GetStats(ctx context.Context) (*Stats, error)`
+- `GetLocation(ctx context.Context) (*Location, error)`
+- `Reboot(ctx context.Context) error`
+
+## Exemplo mínimo
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+	"time"
+
+	"github.com/Romerito007/starlink-adapter/starlink-go/client"
+)
+
+func main() {
+	cli, err := client.NewClient(client.Config{
+		Host:    "192.168.100.1",
+		Port:    9200,
+		Timeout: 5 * time.Second,
+	})
+	if err != nil {
+		panic(err)
+	}
+
+	status, err := cli.GetStatus(context.Background())
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println(status.DeviceID)
+}
+```
+
+## Observação de rede
+
+O transporte suportado é apenas gRPC local (`internal/transport/localgrpc`), com acesso esperado por rede local/VPN. Não há API remota web neste pacote.
