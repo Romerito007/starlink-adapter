@@ -11,8 +11,6 @@ import (
 	pb "github.com/Romerito007/starlink-adapter/starlink-go/proto/gen/spacex/api/device"
 )
 
-const DefaultDishAddress = "192.168.100.1:9200"
-
 // StarlinkClient is the minimal monitoring and basic-ops API.
 type StarlinkClient interface {
 	GetStatus(ctx context.Context) (*Status, error)
@@ -56,10 +54,6 @@ func NewClient(cfg Config) (StarlinkClient, error) {
 }
 
 func dialWithConfig(ctx context.Context, address string, cfg Config) (*grpcClient, error) {
-	if address == "" {
-		address = DefaultDishAddress
-	}
-
 	t, err := localgrpc.Dial(ctx, address)
 	if err != nil {
 		return nil, normalizeError(err)
