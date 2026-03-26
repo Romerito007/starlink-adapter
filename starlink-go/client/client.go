@@ -6,21 +6,28 @@ import (
 	"time"
 
 	"github.com/Eitol/starlink-client/starlink-go/internal/transport/localgrpc"
-	"github.com/Eitol/starlink-client/starlink-go/proto/gen/spacex/api/device"
+	pb "github.com/Eitol/starlink-client/starlink-go/proto/gen/spacex/api/device"
 )
 
 const DefaultDishAddress = "192.168.100.1:9200"
 
-// Client is a deterministic Starlink local gRPC client.
-type Client struct {
-	transport Transport
+// StarlinkClient is the minimal monitoring and basic-ops API.
+type StarlinkClient interface {
+	GetStatus(ctx context.Context) (*Status, error)
+	GetStats(ctx context.Context) (*Stats, error)
+	GetLocation(ctx context.Context) (*Location, error)
+	Reboot(ctx context.Context) error
 }
 
-func New(transport Transport) *Client {
-	return &Client{transport: transport}
+type grpcClient struct {
+	transport transport
 }
 
-func Dial(ctx context.Context, address string) (*Client, error) {
+func NewGRPCClient(transport transport) *grpcClient {
+	return &grpcClient{transport: transport}
+}
+
+func Dial(ctx context.Context, address string) (*grpcClient, error) {
 	if address == "" {
 		address = DefaultDishAddress
 	}
@@ -30,18 +37,86 @@ func Dial(ctx context.Context, address string) (*Client, error) {
 		return nil, err
 	}
 
-	return New(t), nil
+	return NewGRPCClient(t), nil
 }
 
-func (c *Client) Close() error {
+var _ StarlinkClient = (*grpcClient)(nil)
+
+func (c *grpcClient) Close() error {
 	if c == nil || c.transport == nil {
 		return nil
 	}
 	return c.transport.Close()
 }
 
-// Handle sends a raw Request to the local dish endpoint.
-func (c *Client) Handle(ctx context.Context, req *device.Request) (*device.Response, error) {
+func (c *grpcClient) GetStatus(ctx context.Context) (*Status, error) {
+	ctx, cancel := context.WithTimeout(ctx, 3*time.Second)
+	defer cancel()
+
+	resp, err := c.send(ctx, &pb.Request{Request: &pb.Request_GetStatus{GetStatus: &pb.GetStatusRequest{}}})
+	if err != nil {
+		return nil, err
+	}
+
+	statusResp, ok := resp.Response.(*pb.Response_DishGetStatus)
+	if !ok {
+		return nil, fmt.Errorf("unexpected response type %T", resp.Response)
+	}
+
+	return mapStatus(statusResp.DishGetStatus), nil
+}
+
+func (c *grpcClient) GetStats(ctx context.Context) (*Stats, error) {
+	ctx, cancel := context.WithTimeout(ctx, 3*time.Second)
+	defer cancel()
+
+	resp, err := c.send(ctx, &pb.Request{Request: &pb.Request_GetHistory{GetHistory: &pb.GetHistoryRequest{}}})
+	if err != nil {
+		return nil, err
+	}
+
+	historyResp, ok := resp.Response.(*pb.Response_DishGetHistory)
+	if !ok {
+		return nil, fmt.Errorf("unexpected response type %T", resp.Response)
+	}
+
+	return mapStats(historyResp.DishGetHistory), nil
+}
+
+func (c *grpcClient) GetLocation(ctx context.Context) (*Location, error) {
+	ctx, cancel := context.WithTimeout(ctx, 3*time.Second)
+	defer cancel()
+
+	resp, err := c.send(ctx, &pb.Request{Request: &pb.Request_GetLocation{GetLocation: &pb.GetLocationRequest{}}})
+	if err != nil {
+		return nil, err
+	}
+
+	locationResp, ok := resp.Response.(*pb.Response_GetLocation)
+	if !ok {
+		return nil, fmt.Errorf("unexpected response type %T", resp.Response)
+	}
+
+	return mapLocation(locationResp.GetLocation), nil
+}
+
+func (c *grpcClient) Reboot(ctx context.Context) error {
+	ctx, cancel := context.WithTimeout(ctx, 3*time.Second)
+	defer cancel()
+
+	resp, err := c.send(ctx, &pb.Request{Request: &pb.Request_Reboot{Reboot: &pb.RebootRequest{}}})
+	if err != nil {
+		return err
+	}
+
+	if _, ok := resp.Response.(*pb.Response_Reboot); !ok {
+		return fmt.Errorf("unexpected response type %T", resp.Response)
+	}
+
+	return nil
+}
+
+func (c *grpcClient) send(ctx context.Context, req *pb.Request) (*pb.Response, error) {
 	if c == nil || c.transport == nil {
 		return nil, fmt.Errorf("transport is not configured")
 	}
@@ -49,26 +124,4 @@ func (c *Client) Handle(ctx context.Context, req *device.Request) (*device.Respo
 		return nil, fmt.Errorf("request cannot be nil")
 	}
 	return c.transport.Handle(ctx, req)
-}
-
-// GetStatus requests current dish status from the local gRPC API.
-func (c *Client) GetStatus(ctx context.Context) (*device.DishGetStatusResponse, error) {
-	ctx, cancel := context.WithTimeout(ctx, 3*time.Second)
-	defer cancel()
-
-	resp, err := c.Handle(ctx, &device.Request{
-		Request: &device.Request_GetStatus{
-			GetStatus: &device.GetStatusRequest{},
-		},
-	})
-	if err != nil {
-		return nil, err
-	}
-
-	statusResp, ok := resp.Response.(*device.Response_DishGetStatus)
-	if !ok {
-		return nil, fmt.Errorf("unexpected response type %T", resp.Response)
-	}
-
-	return statusResp.DishGetStatus, nil
 }
