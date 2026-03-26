@@ -2,36 +2,13 @@
 
 Módulo Go: `github.com/Romerito007/starlink-adapter/starlink-go`
 
-Cliente Go para acesso **local gRPC** ao terminal Starlink (Dishy).
+## 1) O que é este projeto
 
-## Objetivo do pacote
+`starlink-go` é um **adapter Go privado** para acesso técnico ao terminal Starlink via gRPC local (porta 9200), normalmente em rede local ou por malha privada (VPN/roteamento).
 
-Fornecer um cliente Go com API pública enxuta para operações básicas de leitura/controle da Starlink via endpoint local `host:port` (tipicamente LAN, ou VPN com alcance da LAN).
+Este projeto **não é uma plataforma completa**: ele entrega um cliente enxuto para monitoramento e operações básicas do terminal.
 
-## Configuração
-
-O cliente usa:
-
-- `Host string`
-- `Port int`
-- `Timeout time.Duration`
-- `Logger *slog.Logger` (opcional)
-
-Defaults aplicados por `NewClient` quando não informados:
-
-- `Host`: `192.168.100.1`
-- `Port`: `9200`
-- `Timeout`: `5s`
-
-## Construtor público
-
-```go
-func NewClient(ctx context.Context, cfg Config) (StarlinkClient, error)
-```
-
-## Operações suportadas
-
-A interface pública `StarlinkClient` expõe somente:
+Operações atualmente suportadas:
 
 - `GetStatus(ctx context.Context) (*Status, error)`
 - `GetStats(ctx context.Context) (*Stats, error)`
@@ -39,7 +16,120 @@ A interface pública `StarlinkClient` expõe somente:
 - `Reboot(ctx context.Context) error`
 - `Close() error`
 
-## Exemplo mínimo
+## 2) Como a conectividade funciona
+
+A Starlink expõe um endpoint gRPC local (tipicamente `192.168.100.1:9200` no domínio local do terminal).
+
+Para este adapter funcionar, o serviço que executa o cliente precisa ter **alcance de rede TCP real** até o `host:port` da Starlink. Isso normalmente ocorre por:
+
+- mesma LAN da Starlink; ou
+- VPN (site-to-site, hub-and-spoke etc.); ou
+- roteamento entre redes internas até a rede onde está a Starlink.
+
+Esta lib **não depende de API web remota** e **não usa cookie/browser**.
+
+## 3) Cenário recomendado com MikroTik (exemplo principal)
+
+Exemplo típico em produção:
+
+1. A unidade/filial do cliente possui um roteador (ex.: MikroTik) conectado à rede local da Starlink.
+2. Esse roteador estabelece VPN para a infraestrutura central.
+3. A infraestrutura central passa a alcançar o IP local da Starlink (ou um endpoint redirecionado) via malha privada.
+4. O serviço central usa este adapter apontando para o `host:port` alcançável.
+
+Quando usar port-forward/NAT interno:
+
+- quando o serviço não enxerga diretamente o IP local da Starlink;
+- quando a topologia exige um endpoint intermediário no roteador da unidade.
+
+Ponto principal: o adapter só precisa que o `host:port` final esteja alcançável pela rede privada.
+
+Sobre IP fixo público:
+
+- **não é obrigatório em toda topologia**;
+- com VPN bem montada, o acesso pode ser estável sem IP público fixo;
+- IP fixo público faz sentido quando ajuda em previsibilidade de túneis, simplificação operacional e troubleshooting.
+
+## 4) Requisitos de rede
+
+Para operação estável:
+
+- reachability TCP até `host:port` da Starlink;
+- rotas corretas no roteador/firewall;
+- ACL/firewall permitindo tráfego necessário entre serviço e terminal;
+- latência e estabilidade de rede compatíveis com chamadas gRPC.
+
+> Observação: `192.168.100.1:9200` é o padrão comum local, mas o endpoint efetivo pode variar conforme a topologia (VPN/NAT/roteamento).
+
+## 5) Exemplo de configuração lógica (arquitetura)
+
+```text
+[Serviço central / NOC]
+          |
+          | (VPN privada)
+          v
+[Roteador da unidade - ex. MikroTik]
+          |
+          | (LAN local da unidade)
+          v
+[Starlink endpoint gRPC: 192.168.100.1:9200]
+```
+
+Fluxo operacional:
+
+- o serviço central envia chamadas gRPC para o `host:port` configurado;
+- a malha de conectividade (VPN + roteamento + firewall) entrega o tráfego até a rede da Starlink;
+- o adapter executa chamadas de status/estatísticas/localização/reboot.
+
+## 6) Como configurar o client
+
+Construtor público:
+
+```go
+func NewClient(ctx context.Context, cfg Config) (StarlinkClient, error)
+```
+
+Config disponível:
+
+- `Host string`
+- `Port int`
+- `Timeout time.Duration`
+- `Logger *slog.Logger` (opcional)
+
+Defaults técnicos aplicados quando não informados:
+
+- `Host`: `192.168.100.1`
+- `Port`: `9200`
+- `Timeout`: `5s`
+
+`Host`/`Port` devem apontar para o endpoint **realmente alcançável** pelo serviço (LAN/VPN/roteamento privado).
+
+## 7) Quando este adapter faz sentido
+
+Este adapter é útil quando você já possui conectividade de rede entre um sistema central e muitos terminais, por exemplo:
+
+- operações de NOC;
+- monitoramento centralizado de filiais/unidades;
+- reboot controlado em operação;
+- coleta periódica de saúde/métricas.
+
+Escalas típicas de uso: ambientes com 100, 300 ou 1000+ unidades, desde que exista malha de conectividade bem definida.
+
+O ganho principal é padronizar acesso técnico ao terminal dentro de um ecossistema maior de observabilidade/orquestração.
+
+## 8) Limitações
+
+Este adapter **não**:
+
+- faz descoberta automática de rede;
+- cria ou gerencia VPN;
+- abre firewall/rota automaticamente;
+- resolve NAT/topologia por conta própria;
+- faz autenticação remota web de conta Starlink.
+
+Ele depende de reachability real até o terminal e deve ser combinado com um sistema maior de monitoramento/provisioning.
+
+## 9) Exemplo mínimo de uso
 
 ```go
 package main
@@ -54,7 +144,7 @@ import (
 
 func main() {
 	cli, err := client.NewClient(context.Background(), client.Config{
-		Host:    "192.168.100.1",
+		Host:    "192.168.100.1", // ou endpoint alcançável via VPN/roteamento
 		Port:    9200,
 		Timeout: 5 * time.Second,
 	})
@@ -68,10 +158,14 @@ func main() {
 		panic(err)
 	}
 
-	fmt.Println(status.DeviceID)
+	fmt.Printf("device_id=%s uptime=%d\n", status.DeviceID, status.UptimeSeconds)
 }
 ```
 
-## Observação de rede
+## 10) Observações operacionais
 
-O transporte suportado é apenas gRPC local (`internal/transport/localgrpc`), com acesso esperado por rede local/VPN. Não há API remota web neste pacote.
+- Ajuste `Timeout` por perfil de rede (latência/jitter entre central e unidade).
+- O client já aplica retry/backoff simples para falhas transitórias, mas isso não substitui uma malha de rede estável.
+- Feche o client com `Close()` ao encerrar worker/job/processo.
+- Evite polling agressivo em larga escala; prefira agendamento controlado, filas e workers.
+- Em ambientes grandes, distribua coleta por lotes para reduzir picos de carga e facilitar troubleshooting.
