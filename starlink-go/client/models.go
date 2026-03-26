@@ -29,3 +29,18 @@ type Location struct {
 	SigmaM    float64
 	Source    string
 }
+
+// ClientDevice is the normalized domain model for a connected LAN/Wi-Fi client.
+type ClientDevice struct {
+	ClientID      uint32
+	Name          string
+	GivenName     string
+	Domain        string
+	MACAddress    string
+	IPAddress     string
+	IPv6Addresses []string
+	Interface     string
+	InterfaceName string
+	Role          string
+	DeviceID      string
+}

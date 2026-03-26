@@ -15,6 +15,7 @@ type StarlinkClient interface {
 	GetStatus(ctx context.Context) (*Status, error)
 	GetStats(ctx context.Context) (*Stats, error)
 	GetLocation(ctx context.Context) (*Location, error)
+	GetConnectedClients(ctx context.Context) ([]ClientDevice, error)
 	Reboot(ctx context.Context) error
 	Close() error
 }
@@ -132,6 +133,22 @@ func (c *grpcClient) Reboot(ctx context.Context) error {
 	}
 
 	return nil
+}
+
+func (c *grpcClient) GetConnectedClients(ctx context.Context) ([]ClientDevice, error) {
+	resp, err := c.sendWithRetry(ctx, "GetConnectedClients", func() *pb.Request {
+		return &pb.Request{Request: &pb.Request_WifiGetClients{WifiGetClients: &pb.WifiGetClientsRequest{}}}
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	clientsResp, ok := resp.Response.(*pb.Response_WifiGetClients)
+	if !ok {
+		return nil, fmt.Errorf("%w: unexpected response type %T", ErrUnsupported, resp.Response)
+	}
+
+	return mapConnectedClients(clientsResp.WifiGetClients.GetClients()), nil
 }
 
 func (c *grpcClient) sendWithRetry(ctx context.Context, operation string, reqFn func() *pb.Request) (*pb.Response, error) {

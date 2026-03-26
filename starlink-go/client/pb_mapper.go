@@ -66,3 +66,32 @@ func mapLocation(in *pb.GetLocationResponse) *Location {
 		Source:    in.GetSource().String(),
 	}
 }
+
+func mapConnectedClients(in []*pb.WifiClient) []ClientDevice {
+	if len(in) == 0 {
+		return []ClientDevice{}
+	}
+
+	out := make([]ClientDevice, 0, len(in))
+	for _, c := range in {
+		if c == nil {
+			continue
+		}
+
+		out = append(out, ClientDevice{
+			ClientID:      c.GetClientId(),
+			Name:          c.GetName(),
+			GivenName:     c.GetGivenName(),
+			Domain:        c.GetDomain(),
+			MACAddress:    c.GetMacAddress(),
+			IPAddress:     c.GetIpAddress(),
+			IPv6Addresses: append([]string(nil), c.GetIpv6Addresses()...),
+			Interface:     c.GetIface().String(),
+			InterfaceName: c.GetIfaceName(),
+			Role:          c.GetRole().String(),
+			DeviceID:      c.GetDeviceId(),
+		})
+	}
+
+	return out
+}
