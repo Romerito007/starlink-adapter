@@ -8,3 +8,5 @@ require (
 )
 
 replace google.golang.org/grpc => ./internal/stub/grpc
+
+replace github.com/google/go-cmp => ./internal/stub/go-cmp
