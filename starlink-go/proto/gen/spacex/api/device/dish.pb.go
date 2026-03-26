@@ -7,7 +7,7 @@
 package device
 
 import (
-	network "github.com/Eitol/starlink-client/starlink-go/proto/gen/spacex/api/satellites/network"
+	network "github.com/Romerito007/starlink-adapter/starlink-go/proto/gen/spacex/api/satellites/network"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"

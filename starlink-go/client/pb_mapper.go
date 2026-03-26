@@ -1,6 +1,6 @@
 package client
 
-import pb "github.com/Eitol/starlink-client/starlink-go/proto/gen/spacex/api/device"
+import pb "github.com/Romerito007/starlink-adapter/starlink-go/proto/gen/spacex/api/device"
 
 func mapStatus(in *pb.DishGetStatusResponse) *Status {
 	if in == nil {

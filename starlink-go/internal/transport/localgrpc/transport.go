@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"sync"
 
-	pb "github.com/Eitol/starlink-client/starlink-go/proto/gen/spacex/api/device"
+	pb "github.com/Romerito007/starlink-adapter/starlink-go/proto/gen/spacex/api/device"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )

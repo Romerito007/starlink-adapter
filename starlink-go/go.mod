@@ -1,4 +1,4 @@
-module github.com/Eitol/starlink-client/starlink-go
+module github.com/Romerito007/starlink-adapter/starlink-go
 
 go 1.22
 

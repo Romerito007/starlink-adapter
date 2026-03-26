@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/Eitol/starlink-client/starlink-go/internal/transport/localgrpc"
-	pb "github.com/Eitol/starlink-client/starlink-go/proto/gen/spacex/api/device"
+	"github.com/Romerito007/starlink-adapter/starlink-go/internal/transport/localgrpc"
+	pb "github.com/Romerito007/starlink-adapter/starlink-go/proto/gen/spacex/api/device"
 )
 
 const DefaultDishAddress = "192.168.100.1:9200"

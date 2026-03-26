@@ -7,7 +7,7 @@
 package device
 
 import (
-	common "github.com/Eitol/starlink-client/starlink-go/proto/gen/spacex/api/telemetron/public/common"
+	common "github.com/Romerito007/starlink-adapter/starlink-go/proto/gen/spacex/api/telemetron/public/common"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	wrapperspb "google.golang.org/protobuf/types/known/wrapperspb"
