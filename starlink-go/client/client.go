@@ -147,6 +147,9 @@ func (c *grpcClient) GetConnectedClients(ctx context.Context) ([]ClientDevice, e
 	if !ok {
 		return nil, fmt.Errorf("%w: unexpected response type %T", ErrUnsupported, resp.Response)
 	}
+	if clientsResp.WifiGetClients == nil {
+		return []ClientDevice{}, nil
+	}
 
 	return mapConnectedClients(clientsResp.WifiGetClients.GetClients()), nil
 }
