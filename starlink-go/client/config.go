@@ -1,24 +1,20 @@
 package client
 
 import (
-	"log/slog"
-	"os"
 	"time"
 )
 
-// Config controls timeout, retry and logging behavior.
+// Config controls transport connection settings per client instance.
 type Config struct {
-	Timeout     time.Duration
-	RetryMax    int
-	BaseBackoff time.Duration
-	Logger      *slog.Logger
+	Host    string
+	Port    int
+	Timeout time.Duration
 }
 
 func defaultConfig() Config {
 	return Config{
-		Timeout:     5 * time.Second,
-		RetryMax:    3,
-		BaseBackoff: 200 * time.Millisecond,
-		Logger:      slog.New(slog.NewJSONHandler(os.Stdout, nil)),
+		Host:    "192.168.100.1",
+		Port:    9200,
+		Timeout: 5 * time.Second,
 	}
 }
