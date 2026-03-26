@@ -5,16 +5,19 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/Eitol/starlink-client/starlink-go/internal/transport/localgrpc"
 	"github.com/Eitol/starlink-client/starlink-go/proto/gen/spacex/api/device"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
 )
 
 const DefaultDishAddress = "192.168.100.1:9200"
 
-// Client is a minimal local gRPC client for the Starlink dish API.
+// Client is a deterministic Starlink local gRPC client.
 type Client struct {
-	conn *grpc.ClientConn
+	transport Transport
+}
+
+func New(transport Transport) *Client {
+	return &Client{transport: transport}
 }
 
 func Dial(ctx context.Context, address string) (*Client, error) {
@@ -22,36 +25,30 @@ func Dial(ctx context.Context, address string) (*Client, error) {
 		address = DefaultDishAddress
 	}
 
-	conn, err := grpc.DialContext(ctx, address,
-		grpc.WithTransportCredentials(insecure.NewCredentials()),
-		grpc.WithBlock(),
-	)
+	t, err := localgrpc.Dial(ctx, address)
 	if err != nil {
-		return nil, fmt.Errorf("dial starlink gRPC endpoint: %w", err)
+		return nil, err
 	}
 
-	return &Client{conn: conn}, nil
+	return New(t), nil
 }
 
 func (c *Client) Close() error {
-	if c == nil || c.conn == nil {
+	if c == nil || c.transport == nil {
 		return nil
 	}
-	return c.conn.Close()
+	return c.transport.Close()
 }
 
 // Handle sends a raw Request to the local dish endpoint.
 func (c *Client) Handle(ctx context.Context, req *device.Request) (*device.Response, error) {
+	if c == nil || c.transport == nil {
+		return nil, fmt.Errorf("transport is not configured")
+	}
 	if req == nil {
 		return nil, fmt.Errorf("request cannot be nil")
 	}
-
-	resp := new(device.Response)
-	if err := c.conn.Invoke(ctx, "/SpaceX.API.Device.Device/Handle", req, resp); err != nil {
-		return nil, fmt.Errorf("invoke Device.Handle: %w", err)
-	}
-
-	return resp, nil
+	return c.transport.Handle(ctx, req)
 }
 
 // GetStatus requests current dish status from the local gRPC API.
