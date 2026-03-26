@@ -3,7 +3,7 @@ package client
 import (
 	"context"
 
-	pb "github.com/Eitol/starlink-client/starlink-go/proto/gen/spacex/api/device"
+	pb "github.com/Romerito007/starlink-adapter/starlink-go/proto/gen/spacex/api/device"
 )
 
 // transport is an internal protocol layer abstraction.
