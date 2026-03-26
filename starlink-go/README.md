@@ -20,6 +20,15 @@ Sem exposição direta de structs protobuf para o consumidor.
 - Sem grpc-web e sem REST remoto.
 - Transporte único: gRPC direto (HTTP/2) para `Device.Handle`.
 
+
+## Robustez
+
+- Timeout padrão configurável (default: `5s`) por operação.
+- Retry até `3x` com exponential backoff para erros transitórios.
+- Erros normalizados: `ErrDeviceOffline`, `ErrTimeout`, `ErrUnavailable`, `ErrUnsupported`.
+- Logging estruturado com `host`, `operation` e `latency_ms`.
+- Conexão reutilizável com suporte a reconnect.
+
 ## Estrutura
 
 - `client/`: interface `StarlinkClient`, modelos de domínio e implementação `grpcClient`.
