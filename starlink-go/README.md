@@ -13,8 +13,32 @@ Operações atualmente suportadas:
 - `GetStatus(ctx context.Context) (*Status, error)`
 - `GetStats(ctx context.Context) (*Stats, error)`
 - `GetLocation(ctx context.Context) (*Location, error)`
+- `GetConnectedClients(ctx context.Context) ([]ClientDevice, error)`
 - `Reboot(ctx context.Context) error`
 - `Close() error`
+
+### GetConnectedClients (wifi_get_clients)
+
+O adapter consulta `wifi_get_clients` e retorna uma lista normalizada de clientes conectados (`[]ClientDevice`).
+
+Campos atualmente mapeados:
+
+- `MacAddress`
+- `IpAddress`
+- `Ipv6Addresses`
+- `Name`
+- `GivenName`
+- `Domain`
+- `Interface` (string normalizada do enum, ex.: `ETH`, `RF_2GHZ`, `RF_5GHZ`, `RF_5GHZ_HIGH`)
+- `InterfaceName`
+- `Role`
+- `ClientID`
+- `DeviceID`
+- `UpstreamMacAddress`
+- `AssociatedTimeSeconds`
+- `SignalStrength`
+
+Limitação importante: o schema protobuf atual **não expõe serial do cliente**.
 
 ## 2) Como a conectividade funciona
 
@@ -159,6 +183,16 @@ func main() {
 	}
 
 	fmt.Printf("device_id=%s uptime=%d\n", status.DeviceID, status.UptimeSeconds)
+
+	clients, err := cli.GetConnectedClients(context.Background())
+	if err != nil {
+		panic(err)
+	}
+
+	for _, c := range clients {
+		fmt.Printf("client_id=%d mac=%s ip=%s iface=%s signal=%.1f\n",
+			c.ClientID, c.MacAddress, c.IpAddress, c.Interface, c.SignalStrength)
+	}
 }
 ```
 
@@ -167,5 +201,6 @@ func main() {
 - Ajuste `Timeout` por perfil de rede (latência/jitter entre central e unidade).
 - O client já aplica retry/backoff simples para falhas transitórias, mas isso não substitui uma malha de rede estável.
 - Feche o client com `Close()` ao encerrar worker/job/processo.
+- Use `GetConnectedClients` com moderação em polling; prefira snapshots periódicos para inventário e diagnóstico, não loop agressivo contínuo.
 - Evite polling agressivo em larga escala; prefira agendamento controlado, filas e workers.
 - Em ambientes grandes, distribua coleta por lotes para reduzir picos de carga e facilitar troubleshooting.
