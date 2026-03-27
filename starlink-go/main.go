@@ -10,7 +10,7 @@ import (
 
 func main() {
 	cli, err := client.NewClient(context.Background(), client.Config{
-		Host:    "45.172.144.97", // ou endpoint alcançável via VPN/roteamento 92000 9000
+		Host:    "100.126.255.11", // ou endpoint alcançável via VPN/roteamento 9200 9000
 		Port:    9000,
 		Timeout: 5 * time.Second,
 	})
