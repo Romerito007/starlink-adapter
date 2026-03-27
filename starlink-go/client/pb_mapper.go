@@ -79,18 +79,20 @@ func mapConnectedClients(in []*pb.WifiClient) []ClientDevice {
 		}
 
 		out = append(out, ClientDevice{
-			ClientID:       c.GetClientId(),
-			Name:           c.GetName(),
-			GivenName:      c.GetGivenName(),
-			Domain:         c.GetDomain(),
-			MACAddress:     c.GetMacAddress(),
-			IPAddress:      c.GetIpAddress(),
-			IPv6Addresses:  append([]string(nil), c.GetIpv6Addresses()...),
-			SignalStrength: c.GetSignalStrength(),
-			Interface:      c.GetIface().String(),
-			InterfaceName:  c.GetIfaceName(),
-			Role:           c.GetRole().String(),
-			DeviceID:       c.GetDeviceId(),
+			ClientID:              c.GetClientId(),
+			Name:                  c.GetName(),
+			GivenName:             c.GetGivenName(),
+			Domain:                c.GetDomain(),
+			MacAddress:            c.GetMacAddress(),
+			IpAddress:             c.GetIpAddress(),
+			Ipv6Addresses:         append([]string(nil), c.GetIpv6Addresses()...),
+			UpstreamMacAddress:    c.GetUpstreamMacAddress(),
+			AssociatedTimeSeconds: c.GetAssociatedTimeS(),
+			SignalStrength:        c.GetSignalStrength(),
+			Interface:             c.GetIface().String(),
+			InterfaceName:         c.GetIfaceName(),
+			Role:                  c.GetRole().String(),
+			DeviceID:              c.GetDeviceId(),
 		})
 	}
 
