@@ -2,6 +2,7 @@ package client
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"log/slog"
 	"time"
@@ -24,6 +25,10 @@ type grpcClient struct {
 	transport transport
 	cfg       Config
 	logger    *slog.Logger
+}
+
+var dialTransport = func(ctx context.Context, address string) (transport, error) {
+	return localgrpc.Dial(ctx, address)
 }
 
 func newGRPCClient(transport transport, cfg Config) *grpcClient {
@@ -55,8 +60,18 @@ func NewClient(ctx context.Context, cfg Config) (StarlinkClient, error) {
 }
 
 func dialWithConfig(ctx context.Context, address string, cfg Config) (*grpcClient, error) {
-	t, err := localgrpc.Dial(ctx, address)
+	if cfg.Timeout <= 0 {
+		cfg.Timeout = defaultConfig().Timeout
+	}
+
+	dialCtx, cancel := context.WithTimeout(ctx, cfg.Timeout)
+	defer cancel()
+
+	t, err := dialTransport(dialCtx, address)
 	if err != nil {
+		if errors.Is(err, context.DeadlineExceeded) {
+			err = fmt.Errorf("initial dial to starlink local endpoint %q via LAN/VPN exceeded timeout %s: %w", address, cfg.Timeout, err)
+		}
 		return nil, normalizeError(err)
 	}
 
