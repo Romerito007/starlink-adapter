@@ -1,6 +1,7 @@
 package client
 
 import (
+	"log/slog"
 	"time"
 )
 
@@ -9,6 +10,7 @@ type Config struct {
 	Host    string
 	Port    int
 	Timeout time.Duration
+	Logger  *slog.Logger
 }
 
 func defaultConfig() Config {
