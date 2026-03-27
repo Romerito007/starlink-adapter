@@ -5,7 +5,7 @@ type Status struct {
 	DeviceID              string
 	HardwareVersion       string
 	SoftwareVersion       string
-	State                 string
+	UptimeSeconds         uint64
 	UplinkThroughputBps   float32
 	DownlinkThroughputBps float32
 	PopPingDropRate       float32
@@ -28,4 +28,17 @@ type Location struct {
 	Altitude  float64
 	SigmaM    float64
 	Source    string
+}
+
+// ClientDevice is the normalized domain model for a connected LAN/Wi-Fi client.
+type ClientDevice struct {
+	MacAddress            string
+	IpAddress             string
+	Interface             string
+	SignalStrength        float32
+	AssociatedTimeSeconds uint32
+	Name                  string
+	GivenName             string
+	Domain                string
+	Ipv6Addresses         []string
 }
