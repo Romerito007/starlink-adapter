@@ -49,9 +49,26 @@ func TestGetConnectedClients_RequestAndMapping(t *testing.T) {
 								GivenName:          "Phone B",
 								Domain:             "lan",
 								Iface:              pb.WifiClient_RF_5GHZ,
+								IfaceName:          "wlan1",
+								Role:               pb.WifiClient_REPEATER,
 								UpstreamMacAddress: "AA:AA:AA:AA:AA:AA",
 								AssociatedTimeS:    22,
 								SignalStrength:     -58.5,
+								Snr:                30.5,
+								ChannelWidth:       40,
+								ModeStr:            "11ac",
+								Blocked:            true,
+								DhcpLeaseActive:    true,
+								DhcpLeaseRenewed:   false,
+								NoDataIdleS:        120,
+								RxStats: &pb.WifiClient_RxStats{
+									RateMbps:         180,
+									RateMbpsLast_15S: 150.5,
+								},
+								TxStats: &pb.WifiClient_TxStats{
+									RateMbps:         90,
+									RateMbpsLast_15S: 75.5,
+								},
 							},
 							{
 								ClientId:           1,
@@ -62,9 +79,26 @@ func TestGetConnectedClients_RequestAndMapping(t *testing.T) {
 								GivenName:          "Phone A",
 								Domain:             "lan",
 								Iface:              pb.WifiClient_ETH,
+								IfaceName:          "eth1",
+								Role:               pb.WifiClient_CLIENT,
 								UpstreamMacAddress: "CC:CC:CC:CC:CC:CC",
 								AssociatedTimeS:    11,
 								SignalStrength:     -48.5,
+								Snr:                40.5,
+								ChannelWidth:       20,
+								ModeStr:            "eth",
+								Blocked:            false,
+								DhcpLeaseActive:    true,
+								DhcpLeaseRenewed:   true,
+								NoDataIdleS:        10,
+								RxStats: &pb.WifiClient_RxStats{
+									RateMbps:         950,
+									RateMbpsLast_15S: 900.5,
+								},
+								TxStats: &pb.WifiClient_TxStats{
+									RateMbps:         400,
+									RateMbpsLast_15S: 350.5,
+								},
 							},
 						},
 					},
@@ -101,11 +135,29 @@ func TestGetConnectedClients_RequestAndMapping(t *testing.T) {
 	if first.Interface != "ETH" {
 		t.Fatalf("unexpected Interface: %q", first.Interface)
 	}
+	if first.InterfaceName != "eth1" || first.Role != "CLIENT" {
+		t.Fatalf("unexpected interface/role mapping: %+v", first)
+	}
 	if first.AssociatedTimeSeconds != 11 {
 		t.Fatalf("unexpected AssociatedTimeSeconds: %d", first.AssociatedTimeSeconds)
 	}
 	if first.SignalStrength != -48.5 {
 		t.Fatalf("unexpected SignalStrength: %v", first.SignalStrength)
+	}
+	if first.Snr != 40.5 || first.ChannelWidth != 20 || first.Mode != "eth" {
+		t.Fatalf("unexpected radio mode mapping: %+v", first)
+	}
+	if !first.DhcpLeaseActive || !first.DhcpLeaseRenewed || first.Blocked {
+		t.Fatalf("unexpected dhcp/blocked mapping: %+v", first)
+	}
+	if first.NoDataIdleSeconds != 10 {
+		t.Fatalf("unexpected NoDataIdleSeconds: %d", first.NoDataIdleSeconds)
+	}
+	if first.RxRateMbps != 950 || first.TxRateMbps != 400 {
+		t.Fatalf("unexpected rx/tx rate mapping: %+v", first)
+	}
+	if first.RxRateMbpsLast15s != 900.5 || first.TxRateMbpsLast15s != 350.5 {
+		t.Fatalf("unexpected last15s rate mapping: %+v", first)
 	}
 	if len(first.Ipv6Addresses) != 2 || first.Ipv6Addresses[0] != "2001::1" || first.Ipv6Addresses[1] != "2001::2" {
 		t.Fatalf("unexpected sorted Ipv6Addresses: %#v", first.Ipv6Addresses)
@@ -164,8 +216,14 @@ func TestGetConnectedClients_OptionalFieldsMissing(t *testing.T) {
 	if entry.Interface != "UNKNOWN" {
 		t.Fatalf("expected unknown enum string, got interface=%q", entry.Interface)
 	}
+	if entry.Role != "ROLE_UNKNOWN" {
+		t.Fatalf("expected unknown role enum string, got role=%q", entry.Role)
+	}
 	if entry.Ipv6Addresses == nil {
 		t.Fatalf("expected non-nil Ipv6Addresses slice")
+	}
+	if entry.RxRateMbps != 0 || entry.TxRateMbps != 0 || entry.RxRateMbpsLast15s != 0 || entry.TxRateMbpsLast15s != 0 {
+		t.Fatalf("expected zeroed throughput metrics, got %+v", entry)
 	}
 }
 
