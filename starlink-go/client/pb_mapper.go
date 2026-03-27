@@ -1,6 +1,11 @@
 package client
 
-import pb "github.com/Romerito007/starlink-adapter/starlink-go/proto/gen/spacex/api/device"
+import (
+	"sort"
+	"strings"
+
+	pb "github.com/Romerito007/starlink-adapter/starlink-go/proto/gen/spacex/api/device"
+)
 
 func mapStatus(in *pb.DishGetStatusResponse) *Status {
 	if in == nil {
@@ -14,9 +19,29 @@ func mapStatus(in *pb.DishGetStatusResponse) *Status {
 		DeviceID:              deviceInfo.GetId(),
 		HardwareVersion:       deviceInfo.GetHardwareVersion(),
 		SoftwareVersion:       deviceInfo.GetSoftwareVersion(),
-		State:                 deviceState.GetUptimeState().String(),
+		UptimeSeconds:         deviceState.GetUptimeS(),
 		UplinkThroughputBps:   in.GetUplinkThroughputBps(),
 		DownlinkThroughputBps: in.GetDownlinkThroughputBps(),
+		PopPingDropRate:       in.GetPopPingDropRate(),
+		PopPingLatencyMs:      in.GetPopPingLatencyMs(),
+	}
+}
+
+func mapStatusFromWifi(in *pb.WifiGetStatusResponse) *Status {
+	if in == nil {
+		return &Status{}
+	}
+
+	deviceInfo := in.GetDeviceInfo()
+	deviceState := in.GetDeviceState()
+
+	return &Status{
+		DeviceID:              deviceInfo.GetId(),
+		HardwareVersion:       deviceInfo.GetHardwareVersion(),
+		SoftwareVersion:       deviceInfo.GetSoftwareVersion(),
+		UptimeSeconds:         deviceState.GetUptimeS(),
+		UplinkThroughputBps:   0,
+		DownlinkThroughputBps: 0,
 		PopPingDropRate:       in.GetPopPingDropRate(),
 		PopPingLatencyMs:      in.GetPopPingLatencyMs(),
 	}
@@ -42,6 +67,13 @@ func mapLocation(in *pb.GetLocationResponse) *Location {
 	}
 
 	lla := in.GetLla()
+	if lla == nil {
+		return &Location{
+			SigmaM: in.GetSigmaM(),
+			Source: in.GetSource().String(),
+		}
+	}
+
 	return &Location{
 		Latitude:  lla.GetLat(),
 		Longitude: lla.GetLon(),
@@ -49,4 +81,67 @@ func mapLocation(in *pb.GetLocationResponse) *Location {
 		SigmaM:    in.GetSigmaM(),
 		Source:    in.GetSource().String(),
 	}
+}
+
+func mapConnectedClients(in []*pb.WifiClient) []ClientDevice {
+	if len(in) == 0 {
+		return []ClientDevice{}
+	}
+
+	out := make([]ClientDevice, 0, len(in))
+	for _, c := range in {
+		if c == nil {
+			continue
+		}
+
+		ipv6 := append([]string{}, c.GetIpv6Addresses()...)
+		sort.Strings(ipv6)
+		rxStats := c.GetRxStats()
+		txStats := c.GetTxStats()
+
+		out = append(out, ClientDevice{
+			MacAddress:            c.GetMacAddress(),
+			IpAddress:             c.GetIpAddress(),
+			Interface:             c.GetIface().String(),
+			InterfaceName:         c.GetIfaceName(),
+			Role:                  c.GetRole().String(),
+			SignalStrength:        c.GetSignalStrength(),
+			Snr:                   c.GetSnr(),
+			ChannelWidth:          c.GetChannelWidth(),
+			Mode:                  c.GetModeStr(),
+			Blocked:               c.GetBlocked(),
+			DhcpLeaseActive:       c.GetDhcpLeaseActive(),
+			DhcpLeaseRenewed:      c.GetDhcpLeaseRenewed(),
+			AssociatedTimeSeconds: c.GetAssociatedTimeS(),
+			NoDataIdleSeconds:     c.GetNoDataIdleS(),
+			RxRateMbps:            rxStats.GetRateMbps(),
+			TxRateMbps:            txStats.GetRateMbps(),
+			RxRateMbpsLast15s:     rxStats.GetRateMbpsLast_15S(),
+			TxRateMbpsLast15s:     txStats.GetRateMbpsLast_15S(),
+			Name:                  c.GetName(),
+			GivenName:             c.GetGivenName(),
+			Domain:                c.GetDomain(),
+			Ipv6Addresses:         ipv6,
+		})
+	}
+
+	sort.Slice(out, func(i, j int) bool {
+		leftIface := strings.ToLower(out[i].Interface)
+		rightIface := strings.ToLower(out[j].Interface)
+		if leftIface != rightIface {
+			return leftIface < rightIface
+		}
+
+		leftMAC := strings.ToLower(out[i].MacAddress)
+		rightMAC := strings.ToLower(out[j].MacAddress)
+		if leftMAC != rightMAC {
+			return leftMAC < rightMAC
+		}
+
+		leftName := strings.ToLower(out[i].Name)
+		rightName := strings.ToLower(out[j].Name)
+		return leftName < rightName
+	})
+
+	return out
 }
