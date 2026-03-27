@@ -83,20 +83,15 @@ func mapConnectedClients(in []*pb.WifiClient) []ClientDevice {
 		sort.Strings(ipv6)
 
 		out = append(out, ClientDevice{
-			ClientID:              c.GetClientId(),
+			MacAddress:            c.GetMacAddress(),
+			IpAddress:             c.GetIpAddress(),
+			Interface:             c.GetIface().String(),
+			SignalStrength:        c.GetSignalStrength(),
+			AssociatedTimeSeconds: c.GetAssociatedTimeS(),
 			Name:                  c.GetName(),
 			GivenName:             c.GetGivenName(),
 			Domain:                c.GetDomain(),
-			MacAddress:            c.GetMacAddress(),
-			IpAddress:             c.GetIpAddress(),
 			Ipv6Addresses:         ipv6,
-			UpstreamMacAddress:    c.GetUpstreamMacAddress(),
-			AssociatedTimeSeconds: c.GetAssociatedTimeS(),
-			SignalStrength:        c.GetSignalStrength(),
-			Interface:             c.GetIface().String(),
-			InterfaceName:         c.GetIfaceName(),
-			Role:                  c.GetRole().String(),
-			DeviceID:              c.GetDeviceId(),
 		})
 	}
 
@@ -113,7 +108,9 @@ func mapConnectedClients(in []*pb.WifiClient) []ClientDevice {
 			return leftMAC < rightMAC
 		}
 
-		return out[i].ClientID < out[j].ClientID
+		leftName := strings.ToLower(out[i].Name)
+		rightName := strings.ToLower(out[j].Name)
+		return leftName < rightName
 	})
 
 	return out

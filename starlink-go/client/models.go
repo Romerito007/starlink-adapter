@@ -32,18 +32,13 @@ type Location struct {
 
 // ClientDevice is the normalized domain model for a connected LAN/Wi-Fi client.
 type ClientDevice struct {
-	ClientID              uint32
+	MacAddress            string
+	IpAddress             string
+	Interface             string
+	SignalStrength        float32
+	AssociatedTimeSeconds uint32
 	Name                  string
 	GivenName             string
 	Domain                string
-	MacAddress            string
-	IpAddress             string
 	Ipv6Addresses         []string
-	UpstreamMacAddress    string
-	AssociatedTimeSeconds uint32
-	SignalStrength        float32
-	Interface             string
-	InterfaceName         string
-	Role                  string
-	DeviceID              string
 }
