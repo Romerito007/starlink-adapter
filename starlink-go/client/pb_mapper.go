@@ -15,11 +15,6 @@ func mapStatus(in *pb.DishGetStatusResponse) *Status {
 	deviceInfo := in.GetDeviceInfo()
 	deviceState := in.GetDeviceState()
 
-	state := ""
-	if deviceState != nil {
-		state = strconv.FormatUint(deviceState.GetUptimeS(), 10)
-	}
-
 	return &Status{
 		DeviceID:              deviceInfo.GetId(),
 		HardwareVersion:       deviceInfo.GetHardwareVersion(),
