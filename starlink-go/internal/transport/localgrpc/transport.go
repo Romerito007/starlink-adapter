@@ -12,6 +12,8 @@ import (
 
 const deviceHandleMethod = "/SpaceX.API.Device.Device/Handle"
 
+// Transport implements the only supported network path for this package:
+// direct local gRPC access to a Starlink terminal over LAN/VPN.
 type Transport struct {
 	mu      sync.RWMutex
 	conn    *grpc.ClientConn
@@ -19,6 +21,10 @@ type Transport struct {
 }
 
 func Dial(ctx context.Context, address string) (*Transport, error) {
+	if address == "" {
+		return nil, fmt.Errorf("starlink local gRPC endpoint is required (host:port)")
+	}
+
 	t := &Transport{address: address}
 	if err := t.Reconnect(ctx); err != nil {
 		return nil, err
@@ -36,7 +42,7 @@ func (t *Transport) Reconnect(ctx context.Context) error {
 		grpc.WithBlock(),
 	)
 	if err != nil {
-		return fmt.Errorf("dial starlink local gRPC endpoint: %w", err)
+		return fmt.Errorf("cannot reach starlink local gRPC endpoint %q via LAN/VPN: %w", t.address, err)
 	}
 
 	t.mu.Lock()
@@ -67,7 +73,7 @@ func (t *Transport) Handle(ctx context.Context, req *pb.Request) (*pb.Response, 
 
 	resp := new(pb.Response)
 	if err := conn.Invoke(ctx, deviceHandleMethod, req, resp); err != nil {
-		return nil, fmt.Errorf("invoke Device.Handle: %w", err)
+		return nil, fmt.Errorf("local gRPC Device.Handle failed for %q: %w", t.address, err)
 	}
 	return resp, nil
 }
