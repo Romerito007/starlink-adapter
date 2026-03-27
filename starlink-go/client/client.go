@@ -95,12 +95,14 @@ func (c *grpcClient) GetStatus(ctx context.Context) (*Status, error) {
 		return nil, err
 	}
 
-	statusResp, ok := resp.Response.(*pb.Response_DishGetStatus)
-	if !ok {
+	switch statusResp := resp.Response.(type) {
+	case *pb.Response_DishGetStatus:
+		return mapStatus(statusResp.DishGetStatus), nil
+	case *pb.Response_WifiGetStatus:
+		return mapStatusFromWifi(statusResp.WifiGetStatus), nil
+	default:
 		return nil, fmt.Errorf("%w: unexpected response type %T", ErrUnsupported, resp.Response)
 	}
-
-	return mapStatus(statusResp.DishGetStatus), nil
 }
 
 func (c *grpcClient) GetStats(ctx context.Context) (*Stats, error) {
