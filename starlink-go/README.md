@@ -25,18 +25,26 @@ Campos atualmente mapeados:
 
 - `MacAddress`
 - `IpAddress`
-- `Ipv6Addresses`
+- `Interface` (string normalizada do enum, ex.: `ETH`, `RF_2GHZ`, `RF_5GHZ`, `RF_5GHZ_HIGH`)
+- `SignalStrength`
+- `AssociatedTimeSeconds`
 - `Name`
 - `GivenName`
 - `Domain`
-- `Interface` (string normalizada do enum, ex.: `ETH`, `RF_2GHZ`, `RF_5GHZ`, `RF_5GHZ_HIGH`)
-- `InterfaceName`
+- `Ipv6Addresses`
+- `DhcpLeaseActive`
+- `DhcpLeaseRenewed`
+- `ChannelWidth`
+- `Snr`
+- `Mode`
+- `Blocked`
 - `Role`
-- `ClientID`
-- `DeviceID`
-- `UpstreamMacAddress`
-- `AssociatedTimeSeconds`
-- `SignalStrength`
+- `InterfaceName`
+- `NoDataIdleSeconds`
+- `RxRateMbps`
+- `TxRateMbps`
+- `RxRateMbpsLast15s`
+- `TxRateMbpsLast15s`
 
 Limitação importante: o schema protobuf atual **não expõe serial do cliente**.
 
@@ -190,8 +198,8 @@ func main() {
 	}
 
 	for _, c := range clients {
-		fmt.Printf("client_id=%d mac=%s ip=%s iface=%s signal=%.1f\n",
-			c.ClientID, c.MacAddress, c.IpAddress, c.Interface, c.SignalStrength)
+		fmt.Printf("mac=%s ip=%s iface=%s signal=%.1f rx=%d tx=%d blocked=%t\n",
+			c.MacAddress, c.IpAddress, c.Interface, c.SignalStrength, c.RxRateMbps, c.TxRateMbps, c.Blocked)
 	}
 }
 ```

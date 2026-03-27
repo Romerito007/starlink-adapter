@@ -96,13 +96,28 @@ func mapConnectedClients(in []*pb.WifiClient) []ClientDevice {
 
 		ipv6 := append([]string{}, c.GetIpv6Addresses()...)
 		sort.Strings(ipv6)
+		rxStats := c.GetRxStats()
+		txStats := c.GetTxStats()
 
 		out = append(out, ClientDevice{
 			MacAddress:            c.GetMacAddress(),
 			IpAddress:             c.GetIpAddress(),
 			Interface:             c.GetIface().String(),
+			InterfaceName:         c.GetIfaceName(),
+			Role:                  c.GetRole().String(),
 			SignalStrength:        c.GetSignalStrength(),
+			Snr:                   c.GetSnr(),
+			ChannelWidth:          c.GetChannelWidth(),
+			Mode:                  c.GetModeStr(),
+			Blocked:               c.GetBlocked(),
+			DhcpLeaseActive:       c.GetDhcpLeaseActive(),
+			DhcpLeaseRenewed:      c.GetDhcpLeaseRenewed(),
 			AssociatedTimeSeconds: c.GetAssociatedTimeS(),
+			NoDataIdleSeconds:     c.GetNoDataIdleS(),
+			RxRateMbps:            rxStats.GetRateMbps(),
+			TxRateMbps:            txStats.GetRateMbps(),
+			RxRateMbpsLast15s:     rxStats.GetRateMbpsLast_15S(),
+			TxRateMbpsLast15s:     txStats.GetRateMbpsLast_15S(),
 			Name:                  c.GetName(),
 			GivenName:             c.GetGivenName(),
 			Domain:                c.GetDomain(),
