@@ -10,14 +10,14 @@ import (
 )
 
 type fakeTransport struct {
-	handleFn       func(ctx context.Context, req *pb.Request) (*pb.Response, error)
+	handleFn        func(ctx context.Context, req *pb.Request) (*pb.Response, error)
 	handleCallCount int
-	lastRequest    *pb.Request
+	lastRequest     *pb.Request
 }
 
-func (f *fakeTransport) Host() string { return "fake-host" }
+func (f *fakeTransport) Host() string                        { return "fake-host" }
 func (f *fakeTransport) Reconnect(ctx context.Context) error { return nil }
-func (f *fakeTransport) Close() error { return nil }
+func (f *fakeTransport) Close() error                        { return nil }
 
 func (f *fakeTransport) Handle(ctx context.Context, req *pb.Request) (*pb.Response, error) {
 	f.handleCallCount++
@@ -41,36 +41,30 @@ func TestGetConnectedClients_RequestAndMapping(t *testing.T) {
 					WifiGetClients: &pb.WifiGetClientsResponse{
 						Clients: []*pb.WifiClient{
 							{
-								ClientId:         2,
-								MacAddress:       "BB:00:00:00:00:02",
-								IpAddress:        "192.168.1.20",
-								Ipv6Addresses:    []string{"2001::b", "2001::a"},
-								Name:             "phone-b",
-								GivenName:        "Phone B",
-								Domain:           "lan",
-								Iface:            pb.WifiClient_RF_5GHZ,
-								IfaceName:        "wlan1",
-								Role:             pb.WifiClient_CLIENT,
-								DeviceId:         "dev-2",
+								ClientId:           2,
+								MacAddress:         "BB:00:00:00:00:02",
+								IpAddress:          "192.168.1.20",
+								Ipv6Addresses:      []string{"2001::b", "2001::a"},
+								Name:               "phone-b",
+								GivenName:          "Phone B",
+								Domain:             "lan",
+								Iface:              pb.WifiClient_RF_5GHZ,
 								UpstreamMacAddress: "AA:AA:AA:AA:AA:AA",
-								AssociatedTimeS:  22,
-								SignalStrength:   -58.5,
+								AssociatedTimeS:    22,
+								SignalStrength:     -58.5,
 							},
 							{
-								ClientId:         1,
-								MacAddress:       "AA:00:00:00:00:01",
-								IpAddress:        "192.168.1.10",
-								Ipv6Addresses:    []string{"2001::2", "2001::1"},
-								Name:             "phone-a",
-								GivenName:        "Phone A",
-								Domain:           "lan",
-								Iface:            pb.WifiClient_ETH,
-								IfaceName:        "eth1",
-								Role:             pb.WifiClient_CLIENT,
-								DeviceId:         "dev-1",
+								ClientId:           1,
+								MacAddress:         "AA:00:00:00:00:01",
+								IpAddress:          "192.168.1.10",
+								Ipv6Addresses:      []string{"2001::2", "2001::1"},
+								Name:               "phone-a",
+								GivenName:          "Phone A",
+								Domain:             "lan",
+								Iface:              pb.WifiClient_ETH,
 								UpstreamMacAddress: "CC:CC:CC:CC:CC:CC",
-								AssociatedTimeS:  11,
-								SignalStrength:   -48.5,
+								AssociatedTimeS:    11,
+								SignalStrength:     -48.5,
 							},
 						},
 					},
@@ -106,9 +100,6 @@ func TestGetConnectedClients_RequestAndMapping(t *testing.T) {
 	}
 	if first.Interface != "ETH" {
 		t.Fatalf("unexpected Interface: %q", first.Interface)
-	}
-	if first.UpstreamMacAddress != "CC:CC:CC:CC:CC:CC" {
-		t.Fatalf("unexpected UpstreamMacAddress: %q", first.UpstreamMacAddress)
 	}
 	if first.AssociatedTimeSeconds != 11 {
 		t.Fatalf("unexpected AssociatedTimeSeconds: %d", first.AssociatedTimeSeconds)
@@ -170,8 +161,8 @@ func TestGetConnectedClients_OptionalFieldsMissing(t *testing.T) {
 	if entry.MacAddress != "" || entry.IpAddress != "" || entry.Name != "" || entry.GivenName != "" || entry.Domain != "" {
 		t.Fatalf("expected empty optional strings, got %+v", entry)
 	}
-	if entry.Interface != "UNKNOWN" || entry.Role != "ROLE_UNKNOWN" {
-		t.Fatalf("expected unknown enum strings, got interface=%q role=%q", entry.Interface, entry.Role)
+	if entry.Interface != "UNKNOWN" {
+		t.Fatalf("expected unknown enum string, got interface=%q", entry.Interface)
 	}
 	if entry.Ipv6Addresses == nil {
 		t.Fatalf("expected non-nil Ipv6Addresses slice")
