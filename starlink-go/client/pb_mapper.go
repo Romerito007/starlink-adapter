@@ -32,6 +32,26 @@ func mapStatus(in *pb.DishGetStatusResponse) *Status {
 	}
 }
 
+func mapStatusFromWifi(in *pb.WifiGetStatusResponse) *Status {
+	if in == nil {
+		return &Status{}
+	}
+
+	deviceInfo := in.GetDeviceInfo()
+	deviceState := in.GetDeviceState()
+
+	return &Status{
+		DeviceID:              deviceInfo.GetId(),
+		HardwareVersion:       deviceInfo.GetHardwareVersion(),
+		SoftwareVersion:       deviceInfo.GetSoftwareVersion(),
+		UptimeSeconds:         deviceState.GetUptimeS(),
+		UplinkThroughputBps:   0,
+		DownlinkThroughputBps: 0,
+		PopPingDropRate:       in.GetPopPingDropRate(),
+		PopPingLatencyMs:      in.GetPopPingLatencyMs(),
+	}
+}
+
 func mapStats(in *pb.DishGetHistoryResponse) *Stats {
 	if in == nil {
 		return &Stats{}
