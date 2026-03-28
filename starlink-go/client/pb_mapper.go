@@ -221,6 +221,112 @@ func mapDhcpLeases(in []*pb.DhcpServer) []DhcpLease {
 	return out
 }
 
+func mapWifiConfigSnapshot(in *pb.WifiGetConfigResponse) *WifiConfigSnapshot {
+	if in == nil || in.GetWifiConfig() == nil {
+		return &WifiConfigSnapshot{
+			Networks: []WifiNetwork{},
+		}
+	}
+
+	cfg := in.GetWifiConfig()
+	networks := mapWifiNetworks(cfg.GetNetworks())
+
+	return &WifiConfigSnapshot{
+		CountryCode:     cfg.GetCountryCode(),
+		SetupComplete:   cfg.GetSetupComplete(),
+		MacWan:          cfg.GetMacWan(),
+		MacLan:          cfg.GetMacLan(),
+		BootCount:       cfg.GetBootCount(),
+		Incarnation:     cfg.GetIncarnation(),
+		WanHostDscpMark: cfg.GetWanHostDscpMark(),
+		Networks:        networks,
+	}
+}
+
+func mapWifiNetworks(in []*pb.WifiConfig_Network) []WifiNetwork {
+	if len(in) == 0 {
+		return []WifiNetwork{}
+	}
+
+	out := make([]WifiNetwork, 0, len(in))
+	for _, n := range in {
+		if n == nil {
+			continue
+		}
+
+		out = append(out, WifiNetwork{
+			Ipv4:                       n.GetIpv4(),
+			Domain:                     n.GetDomain(),
+			Dhcpv4Start:                n.GetDhcpv4Start(),
+			Dhcpv4End:                  0,
+			Dhcpv4LeaseDurationSeconds: n.GetDhcpv4LeaseDurationS(),
+			Vlan:                       n.GetVlan(),
+			BasicServiceSets:           mapWifiBasicServiceSets(n.GetBasicServiceSets()),
+		})
+	}
+
+	sort.Slice(out, func(i, j int) bool {
+		leftDomain := strings.ToLower(out[i].Domain)
+		rightDomain := strings.ToLower(out[j].Domain)
+		if leftDomain != rightDomain {
+			return leftDomain < rightDomain
+		}
+
+		leftIP := strings.ToLower(out[i].Ipv4)
+		rightIP := strings.ToLower(out[j].Ipv4)
+		if leftIP != rightIP {
+			return leftIP < rightIP
+		}
+
+		if out[i].Vlan != out[j].Vlan {
+			return out[i].Vlan < out[j].Vlan
+		}
+		return len(out[i].BasicServiceSets) < len(out[j].BasicServiceSets)
+	})
+
+	return out
+}
+
+func mapWifiBasicServiceSets(in []*pb.WifiConfig_BasicServiceSet) []WifiBasicServiceSet {
+	if len(in) == 0 {
+		return []WifiBasicServiceSet{}
+	}
+
+	out := make([]WifiBasicServiceSet, 0, len(in))
+	for _, bss := range in {
+		if bss == nil {
+			continue
+		}
+
+		out = append(out, WifiBasicServiceSet{
+			Bssid:         bss.GetBssid(),
+			Ssid:          bss.GetSsid(),
+			Band:          normalizeEnum(bss.GetBand().String(), ""),
+			InterfaceName: bss.GetIfaceName(),
+		})
+	}
+
+	sort.Slice(out, func(i, j int) bool {
+		leftSSID := strings.ToLower(out[i].Ssid)
+		rightSSID := strings.ToLower(out[j].Ssid)
+		if leftSSID != rightSSID {
+			return leftSSID < rightSSID
+		}
+
+		leftBSSID := strings.ToLower(out[i].Bssid)
+		rightBSSID := strings.ToLower(out[j].Bssid)
+		if leftBSSID != rightBSSID {
+			return leftBSSID < rightBSSID
+		}
+
+		leftIface := strings.ToLower(out[i].InterfaceName)
+		rightIface := strings.ToLower(out[j].InterfaceName)
+		return leftIface < rightIface
+	})
+
+	return out
+}
+
 type recentRates struct {
 	rxRateMbps          uint32
 	txRateMbps          uint32

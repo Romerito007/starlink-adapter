@@ -90,3 +90,34 @@ type DhcpLease struct {
 	ClientID    uint32
 	Domain      string
 }
+
+// WifiConfigSnapshot is the normalized public view of wifi_get_config.
+type WifiConfigSnapshot struct {
+	CountryCode     string
+	SetupComplete   bool
+	MacWan          string
+	MacLan          string
+	BootCount       int32
+	Incarnation     uint64
+	WanHostDscpMark int32
+	Networks        []WifiNetwork
+}
+
+// WifiNetwork is the normalized public network configuration model.
+type WifiNetwork struct {
+	Ipv4                       string
+	Domain                     string
+	Dhcpv4Start                uint32
+	Dhcpv4End                  uint32
+	Dhcpv4LeaseDurationSeconds uint32
+	Vlan                       uint32
+	BasicServiceSets           []WifiBasicServiceSet
+}
+
+// WifiBasicServiceSet is the normalized public BSS model.
+type WifiBasicServiceSet struct {
+	Bssid         string
+	Ssid          string
+	Band          string
+	InterfaceName string
+}

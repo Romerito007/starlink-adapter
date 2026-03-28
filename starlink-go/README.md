@@ -15,6 +15,7 @@ Operações atualmente suportadas:
 - `GetLocation(ctx context.Context) (*Location, error)`
 - `GetConnectedClients(ctx context.Context) ([]ClientDevice, error)`
 - `GetDhcpLeases(ctx context.Context) ([]DhcpLease, error)`
+- `GetWifiConfig(ctx context.Context) (*WifiConfigSnapshot, error)`
 - `Reboot(ctx context.Context) error`
 - `Close() error`
 
@@ -93,6 +94,37 @@ Campos do model `DhcpLease`:
 - `Domain` (herdado de `dhcp_servers[].domain`)
 
 A saída é estável e ordenada por `domain + ip_address + mac_address`.
+
+### GetWifiConfig (wifi_get_config)
+
+O adapter consulta `wifi_get_config` e retorna um snapshot público/normalizado de configuração Wi-Fi/LAN sem expor protobuf e sem expor campos sensíveis (como senha).
+
+Modelos públicos:
+
+- `WifiConfigSnapshot`
+  - `CountryCode`
+  - `SetupComplete`
+  - `MacWan`
+  - `MacLan`
+  - `BootCount`
+  - `Incarnation`
+  - `WanHostDscpMark`
+  - `Networks []WifiNetwork`
+- `WifiNetwork`
+  - `Ipv4`
+  - `Domain`
+  - `Dhcpv4Start`
+  - `Dhcpv4End` (mantido no model público; no protobuf atual fica `0`)
+  - `Dhcpv4LeaseDurationSeconds`
+  - `Vlan`
+  - `BasicServiceSets []WifiBasicServiceSet`
+- `WifiBasicServiceSet`
+  - `Bssid`
+  - `Ssid`
+  - `Band` (string legível normalizada)
+  - `InterfaceName`
+
+A saída de redes e BSS também é estável e ordenada.
 
 ## 2) Como a conectividade funciona
 
