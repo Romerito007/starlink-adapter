@@ -141,6 +141,18 @@ func mapStatusDetailedFromDish(in *pb.DishGetStatusResponse) *StatusDetailed {
 	}
 }
 
+func mapEventLogSummaryFromWifiHistory(in *pb.WifiGetHistoryResponse) *EventLogSummary {
+	// Note: the currently checked-in protobuf for WifiGetHistoryResponse does not
+	// expose event_log fields yet. Keep a stable lightweight summary shape with
+	// safe defaults until those fields are available in typed getters.
+	_ = in
+	return &EventLogSummary{
+		StartTimestampNs:   0,
+		CurrentTimestampNs: 0,
+		Events:             []EventLogEvent{},
+	}
+}
+
 func mapStats(in *pb.DishGetHistoryResponse) *Stats {
 	if in == nil {
 		return &Stats{}

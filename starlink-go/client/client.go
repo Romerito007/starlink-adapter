@@ -22,6 +22,7 @@ type StarlinkClient interface {
 	GetWifiConfig(ctx context.Context) (*WifiConfigSnapshot, error)
 	GetNetworkInterfaces(ctx context.Context) ([]NetworkInterfaceSnapshot, error)
 	GetRadioStats(ctx context.Context) ([]RadioStat, error)
+	GetEventLogSummary(ctx context.Context) (*EventLogSummary, error)
 	Reboot(ctx context.Context) error
 	Close() error
 }
@@ -277,6 +278,22 @@ func (c *grpcClient) GetRadioStats(ctx context.Context) ([]RadioStat, error) {
 	}
 
 	return mapRadioStats(radioResp.GetRadioStats.GetRadioStats()), nil
+}
+
+func (c *grpcClient) GetEventLogSummary(ctx context.Context) (*EventLogSummary, error) {
+	resp, err := c.sendWithRetry(ctx, "GetEventLogSummary", func() *pb.Request {
+		return &pb.Request{Request: &pb.Request_GetHistory{GetHistory: &pb.GetHistoryRequest{}}}
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	historyResp, ok := resp.Response.(*pb.Response_WifiGetHistory)
+	if !ok {
+		return nil, fmt.Errorf("%w: unexpected response type %T", ErrUnsupported, resp.Response)
+	}
+
+	return mapEventLogSummaryFromWifiHistory(historyResp.WifiGetHistory), nil
 }
 
 func (c *grpcClient) getConnectedClientsViaWifiGetClients(ctx context.Context) ([]ClientDevice, error) {

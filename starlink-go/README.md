@@ -19,6 +19,7 @@ Operações atualmente suportadas:
 - `GetWifiConfig(ctx context.Context) (*WifiConfigSnapshot, error)`
 - `GetNetworkInterfaces(ctx context.Context) ([]NetworkInterfaceSnapshot, error)`
 - `GetRadioStats(ctx context.Context) ([]RadioStat, error)`
+- `GetEventLogSummary(ctx context.Context) (*EventLogSummary, error)`
 - `Reboot(ctx context.Context) error`
 - `Close() error`
 
@@ -231,6 +232,27 @@ Estratégia para NaN:
 - Motivo: facilitar serialização/consumo downstream com comportamento determinístico.
 
 A saída é estável e ordenada por `band`.
+
+### GetEventLogSummary (get_history.event_log)
+
+`GetEventLogSummary` expõe um snapshot leve de event log operacional via `get_history`, sem retornar a série histórica bruta completa.
+
+Modelos públicos:
+
+- `EventLogSummary`
+  - `StartTimestampNs`
+  - `CurrentTimestampNs`
+  - `Events []EventLogEvent`
+- `EventLogEvent`
+  - `Severity`
+  - `Reason`
+  - `StartTimestampNs`
+  - `DurationNs`
+
+Observação importante:
+
+- No protobuf atualmente versionado no submódulo, `WifiGetHistoryResponse` ainda não expõe `event_log` por getters tipados.
+- Por isso, o método já retorna a estrutura pública final com nil-safety, porém com defaults (`timestamps=0`, `events=[]`) até a disponibilidade tipada desses campos.
 
 ## 2) Como a conectividade funciona
 

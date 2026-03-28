@@ -223,3 +223,18 @@ type RadioAntennaStatus struct {
 	Rssi3 float32
 	Rssi4 float32
 }
+
+// EventLogSummary is the normalized lightweight event-log snapshot from history.
+type EventLogSummary struct {
+	StartTimestampNs   int64
+	CurrentTimestampNs int64
+	Events             []EventLogEvent
+}
+
+// EventLogEvent is a normalized event-log item.
+type EventLogEvent struct {
+	Severity         string
+	Reason           string
+	StartTimestampNs int64
+	DurationNs       uint64
+}
