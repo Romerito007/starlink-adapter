@@ -64,7 +64,7 @@ func main() {
 		fmt.Printf("  no_data_idle_seconds=%d\n", c.NoDataIdleSeconds)
 		fmt.Printf("  hops_from_controller=%d\n", c.HopsFromController)
 		fmt.Printf("  client_id=%d\n", c.ClientID)
-		fmt.Printf("  captive_client_id=%d\n", c.CaptiveClientID)
+		fmt.Printf("  captive_client_id=%q\n", c.CaptiveClientID)
 		fmt.Printf("  upload_mb=%.3f\n", c.UploadMb)
 		fmt.Printf("  download_mb=%.3f\n", c.DownloadMb)
 		fmt.Printf("  rx_stats_valid=%t\n", c.RxStatsValid)

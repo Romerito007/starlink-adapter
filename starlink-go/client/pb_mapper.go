@@ -3,7 +3,6 @@ package client
 import (
 	"math"
 	"sort"
-	"strconv"
 	"strings"
 
 	pb "github.com/Romerito007/starlink-adapter/starlink-go/proto/gen/spacex/api/device"
@@ -227,7 +226,7 @@ func mapConnectedClients(in []*pb.WifiClient) []ClientDevice {
 			NoDataIdleSeconds:            c.GetNoDataIdleS(),
 			HopsFromController:           c.GetHopsFromController(),
 			ClientID:                     c.GetClientId(),
-			CaptiveClientID:              parseCaptiveClientID(c.GetCaptiveClientId()),
+			CaptiveClientID:              c.GetCaptiveClientId(),
 			UploadMb:                     float32(c.GetUploadMb()),
 			DownloadMb:                   float32(c.GetDownloadMb()),
 			RxStatsValid:                 c.GetRxStatsValid() || rxStats != nil,
@@ -630,17 +629,4 @@ func normalizeEnum(raw string, trimPrefix string) string {
 		normalized = strings.TrimPrefix(normalized, trimPrefix)
 	}
 	return strings.ToLower(normalized)
-}
-
-func parseCaptiveClientID(raw string) uint32 {
-	if raw == "" {
-		return 0
-	}
-
-	n, err := strconv.ParseUint(raw, 10, 32)
-	if err != nil {
-		return 0
-	}
-
-	return uint32(n)
 }

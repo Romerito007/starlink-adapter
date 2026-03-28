@@ -106,6 +106,7 @@ func TestGetConnectedClients_RequestAndMapping(t *testing.T) {
 								Blocked:            false,
 								DhcpLeaseActive:    true,
 								DhcpLeaseRenewed:   true,
+								CaptiveClientId:    "captive-abc-123",
 								NoDataIdleS:        10,
 								HopsFromController: 1,
 								RxStats: &pb.WifiClient_RxStats{
@@ -207,7 +208,7 @@ func TestGetConnectedClients_RequestAndMapping(t *testing.T) {
 	if first.TxRateMbpsLast30s != 300.5 {
 		t.Fatalf("unexpected tx 30s mapping: %+v", first)
 	}
-	if first.CaptiveClientID != 0 || first.UploadMb != 0 || first.DownloadMb != 0 ||
+	if first.CaptiveClientID != "captive-abc-123" || first.UploadMb != 0 || first.DownloadMb != 0 ||
 		first.DhcpLeaseFound || first.SecondsUntilDhcpLeaseExpires != 0 {
 		t.Fatalf("unexpected defaults for unsupported fields: %+v", first)
 	}
