@@ -121,3 +121,42 @@ type WifiBasicServiceSet struct {
 	Band          string
 	InterfaceName string
 }
+
+// NetworkInterfaceSnapshot is the normalized public view of a network interface.
+type NetworkInterfaceSnapshot struct {
+	Name          string
+	Up            bool
+	MacAddress    string
+	Ipv4Addresses []string
+	Ipv6Addresses []string
+	RxStats       InterfaceTrafficStats
+	TxStats       InterfaceTrafficStats
+	Ethernet      *InterfaceEthernetInfo
+	Wifi          *InterfaceWifiInfo
+	Bridge        *InterfaceBridgeInfo
+}
+
+// InterfaceTrafficStats is the normalized traffic counters for an interface.
+type InterfaceTrafficStats struct {
+	Bytes   uint64
+	Packets uint64
+}
+
+// InterfaceEthernetInfo is the normalized ethernet-specific view.
+type InterfaceEthernetInfo struct {
+	LinkDetected      bool
+	SpeedMbps         uint32
+	AutonegotiationOn bool
+	Duplex            string
+}
+
+// InterfaceWifiInfo is the normalized wifi-specific view.
+type InterfaceWifiInfo struct {
+	Channel     uint32
+	LinkQuality float64
+}
+
+// InterfaceBridgeInfo is the normalized bridge-specific view.
+type InterfaceBridgeInfo struct {
+	MemberNames []string
+}

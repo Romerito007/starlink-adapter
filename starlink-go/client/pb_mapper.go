@@ -327,6 +327,86 @@ func mapWifiBasicServiceSets(in []*pb.WifiConfig_BasicServiceSet) []WifiBasicSer
 	return out
 }
 
+func mapNetworkInterfaces(in []*pb.NetworkInterface) []NetworkInterfaceSnapshot {
+	if len(in) == 0 {
+		return []NetworkInterfaceSnapshot{}
+	}
+
+	out := make([]NetworkInterfaceSnapshot, 0, len(in))
+	for _, iface := range in {
+		if iface == nil {
+			continue
+		}
+
+		ipv4 := append([]string{}, iface.GetIpv4Addresses()...)
+		sort.Strings(ipv4)
+		ipv6 := append([]string{}, iface.GetIpv6Addresses()...)
+		sort.Strings(ipv6)
+
+		out = append(out, NetworkInterfaceSnapshot{
+			Name:          iface.GetName(),
+			Up:            iface.GetUp(),
+			MacAddress:    iface.GetMacAddress(),
+			Ipv4Addresses: ipv4,
+			Ipv6Addresses: ipv6,
+			RxStats: InterfaceTrafficStats{
+				Bytes:   iface.GetRxStats().GetBytes(),
+				Packets: iface.GetRxStats().GetPackets(),
+			},
+			TxStats: InterfaceTrafficStats{
+				Bytes:   iface.GetTxStats().GetBytes(),
+				Packets: iface.GetTxStats().GetPackets(),
+			},
+			Ethernet: mapInterfaceEthernet(iface.GetEthernet()),
+			Wifi:     mapInterfaceWifi(iface.GetWifi()),
+			Bridge:   mapInterfaceBridge(iface.GetBridge()),
+		})
+	}
+
+	sort.Slice(out, func(i, j int) bool {
+		return strings.ToLower(out[i].Name) < strings.ToLower(out[j].Name)
+	})
+
+	return out
+}
+
+func mapInterfaceEthernet(in *pb.EthernetNetworkInterface) *InterfaceEthernetInfo {
+	if in == nil {
+		return nil
+	}
+
+	return &InterfaceEthernetInfo{
+		LinkDetected:      in.GetLinkDetected(),
+		SpeedMbps:         in.GetSpeedMbps(),
+		AutonegotiationOn: in.GetAutonegotiationOn(),
+		Duplex:            normalizeEnum(in.GetDuplex().String(), ""),
+	}
+}
+
+func mapInterfaceWifi(in *pb.WifiNetworkInterface) *InterfaceWifiInfo {
+	if in == nil {
+		return nil
+	}
+
+	return &InterfaceWifiInfo{
+		Channel:     in.GetChannel(),
+		LinkQuality: in.GetLinkQuality(),
+	}
+}
+
+func mapInterfaceBridge(in *pb.BridgeNetworkInterface) *InterfaceBridgeInfo {
+	if in == nil {
+		return nil
+	}
+
+	members := append([]string{}, in.GetMemberNames()...)
+	sort.Strings(members)
+
+	return &InterfaceBridgeInfo{
+		MemberNames: members,
+	}
+}
+
 type recentRates struct {
 	rxRateMbps          uint32
 	txRateMbps          uint32

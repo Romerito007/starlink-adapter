@@ -16,6 +16,7 @@ Operações atualmente suportadas:
 - `GetConnectedClients(ctx context.Context) ([]ClientDevice, error)`
 - `GetDhcpLeases(ctx context.Context) ([]DhcpLease, error)`
 - `GetWifiConfig(ctx context.Context) (*WifiConfigSnapshot, error)`
+- `GetNetworkInterfaces(ctx context.Context) ([]NetworkInterfaceSnapshot, error)`
 - `Reboot(ctx context.Context) error`
 - `Close() error`
 
@@ -125,6 +126,39 @@ Modelos públicos:
   - `InterfaceName`
 
 A saída de redes e BSS também é estável e ordenada.
+
+### GetNetworkInterfaces (get_network_interfaces)
+
+O adapter consulta `get_network_interfaces` e retorna um inventário normalizado de interfaces de rede do roteador (`[]NetworkInterfaceSnapshot`), sem expor protobuf.
+
+Campos públicos:
+
+- `NetworkInterfaceSnapshot`
+  - `Name`
+  - `Up`
+  - `MacAddress`
+  - `Ipv4Addresses`
+  - `Ipv6Addresses`
+  - `RxStats`
+  - `TxStats`
+  - `Ethernet`
+  - `Wifi`
+  - `Bridge`
+- `InterfaceTrafficStats`
+  - `Bytes`
+  - `Packets`
+- `InterfaceEthernetInfo`
+  - `LinkDetected`
+  - `SpeedMbps`
+  - `AutonegotiationOn`
+  - `Duplex` (string legível normalizada)
+- `InterfaceWifiInfo`
+  - `Channel`
+  - `LinkQuality`
+- `InterfaceBridgeInfo`
+  - `MemberNames`
+
+Subestruturas (`Ethernet`, `Wifi`, `Bridge`) são opcionais e nil-safe. A saída é estável e ordenada por `name`.
 
 ## 2) Como a conectividade funciona
 
