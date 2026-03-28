@@ -17,6 +17,7 @@ Operações atualmente suportadas:
 - `GetDhcpLeases(ctx context.Context) ([]DhcpLease, error)`
 - `GetWifiConfig(ctx context.Context) (*WifiConfigSnapshot, error)`
 - `GetNetworkInterfaces(ctx context.Context) ([]NetworkInterfaceSnapshot, error)`
+- `GetRadioStats(ctx context.Context) ([]RadioStat, error)`
 - `Reboot(ctx context.Context) error`
 - `Close() error`
 
@@ -159,6 +160,37 @@ Campos públicos:
   - `MemberNames`
 
 Subestruturas (`Ethernet`, `Wifi`, `Bridge`) são opcionais e nil-safe. A saída é estável e ordenada por `name`.
+
+### GetRadioStats (get_radio_stats)
+
+O adapter consulta `get_radio_stats` e retorna saúde básica por banda em `[]RadioStat`.
+
+Modelos públicos:
+
+- `RadioStat`
+  - `Band`
+  - `RxStats`
+  - `TxStats`
+  - `ThermalStatus`
+  - `AntennaStatus`
+- `RadioTrafficStats`
+  - `Packets`
+  - `FrameErrors`
+- `RadioThermalStatus`
+  - `Temp`
+  - `DutyCycle`
+- `RadioAntennaStatus`
+  - `Rssi1`
+  - `Rssi2`
+  - `Rssi3`
+  - `Rssi4`
+
+Estratégia para NaN:
+
+- Campos float com `NaN` vindos do payload (`thermal_status.temp2` e `antenna_status.rssi*`) são normalizados para `0` antes de expor no model público.
+- Motivo: facilitar serialização/consumo downstream com comportamento determinístico.
+
+A saída é estável e ordenada por `band`.
 
 ## 2) Como a conectividade funciona
 

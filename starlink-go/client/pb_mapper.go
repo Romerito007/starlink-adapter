@@ -1,6 +1,7 @@
 package client
 
 import (
+	"math"
 	"sort"
 	"strings"
 
@@ -405,6 +406,66 @@ func mapInterfaceBridge(in *pb.BridgeNetworkInterface) *InterfaceBridgeInfo {
 	return &InterfaceBridgeInfo{
 		MemberNames: members,
 	}
+}
+
+func mapRadioStats(in []*pb.RadioStats) []RadioStat {
+	if len(in) == 0 {
+		return []RadioStat{}
+	}
+
+	out := make([]RadioStat, 0, len(in))
+	for _, radio := range in {
+		if radio == nil {
+			continue
+		}
+
+		rxStats := radio.GetRxStats()
+		txStats := radio.GetTxStats()
+		thermal := radio.GetThermalStatus()
+		antenna := radio.GetAntennaStatus()
+
+		out = append(out, RadioStat{
+			Band: normalizeEnum(radio.GetBand().String(), ""),
+			RxStats: RadioTrafficStats{
+				Packets:     rxStats.GetPackets(),
+				FrameErrors: rxStats.GetFrameErrors(),
+			},
+			TxStats: RadioTrafficStats{
+				Packets:     txStats.GetPackets(),
+				FrameErrors: 0,
+			},
+			ThermalStatus: RadioThermalStatus{
+				Temp:      sanitizeFloat64(thermal.GetTemp2()),
+				DutyCycle: thermal.GetDutyCycle(),
+			},
+			AntennaStatus: RadioAntennaStatus{
+				Rssi1: sanitizeFloat32(antenna.GetRssi1()),
+				Rssi2: sanitizeFloat32(antenna.GetRssi2()),
+				Rssi3: sanitizeFloat32(antenna.GetRssi3()),
+				Rssi4: sanitizeFloat32(antenna.GetRssi4()),
+			},
+		})
+	}
+
+	sort.Slice(out, func(i, j int) bool {
+		return strings.ToLower(out[i].Band) < strings.ToLower(out[j].Band)
+	})
+
+	return out
+}
+
+func sanitizeFloat32(v float32) float32 {
+	if math.IsNaN(float64(v)) {
+		return 0
+	}
+	return v
+}
+
+func sanitizeFloat64(v float64) float64 {
+	if math.IsNaN(v) {
+		return 0
+	}
+	return v
 }
 
 type recentRates struct {

@@ -160,3 +160,32 @@ type InterfaceWifiInfo struct {
 type InterfaceBridgeInfo struct {
 	MemberNames []string
 }
+
+// RadioStat is the normalized public view of per-band radio health.
+type RadioStat struct {
+	Band          string
+	RxStats       RadioTrafficStats
+	TxStats       RadioTrafficStats
+	ThermalStatus RadioThermalStatus
+	AntennaStatus RadioAntennaStatus
+}
+
+// RadioTrafficStats is the normalized packet/error counters for radio traffic.
+type RadioTrafficStats struct {
+	Packets     uint64
+	FrameErrors uint64
+}
+
+// RadioThermalStatus is the normalized thermal view for a radio.
+type RadioThermalStatus struct {
+	Temp      float64
+	DutyCycle uint32
+}
+
+// RadioAntennaStatus is the normalized RSSI view for up to four antenna chains.
+type RadioAntennaStatus struct {
+	Rssi1 float32
+	Rssi2 float32
+	Rssi3 float32
+	Rssi4 float32
+}
