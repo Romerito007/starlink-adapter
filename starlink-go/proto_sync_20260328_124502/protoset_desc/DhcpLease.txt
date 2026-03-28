@@ -1,9 +1,0 @@
-SpaceX.API.Device.DhcpLease is a message:
-message DhcpLease {
-  string ip_address = 1;
-  string mac_address = 2;
-  string hostname = 3;
-  string expires_time = 4;
-  bool active = 5;
-  uint32 client_id = 6;
-}
