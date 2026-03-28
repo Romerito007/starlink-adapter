@@ -1,0 +1,51 @@
+--- /home/romerito007/Documentos/Hibot-Projetos/GolandProject/starlink-adapter/starlink-go/proto_sync_20260328_124502/repo_desc/Request.txt	2026-03-28 12:45:02.250554854 -0300
++++ /home/romerito007/Documentos/Hibot-Projetos/GolandProject/starlink-adapter/starlink-go/proto_sync_20260328_124502/protoset_desc/Request.txt	2026-03-28 12:45:02.071553354 -0300
+@@ -40,6 +40,7 @@
+     .SpaceX.API.Device.RunIperfServerRequest run_iperf_server = 1038;
+     .SpaceX.API.Device.TcpConnectivityTestRequest tcp_connectivity_test = 1039;
+     .SpaceX.API.Device.UdpConnectivityTestRequest udp_connectivity_test = 1040;
++    .SpaceX.API.Device.GetGoroutineStackTracesRequest get_goroutine_stack_traces = 1041;
+     .SpaceX.API.Device.SignedData sensitive_request = 1078;
+     .SpaceX.API.Device.DishStowRequest dish_stow = 2002;
+     .SpaceX.API.Device.DishGetContextRequest dish_get_context = 2003;
+@@ -48,7 +49,6 @@
+     .SpaceX.API.Device.DishGetEmcRequest dish_get_emc = 2009;
+     .SpaceX.API.Device.DishSetConfigRequest dish_set_config = 2010;
+     .SpaceX.API.Device.DishGetConfigRequest dish_get_config = 2011;
+-    .SpaceX.API.Device.StartDishSelfTestRequest start_dish_self_test = 2012;
+     .SpaceX.API.Device.DishPowerSaveRequest dish_power_save = 2013;
+     .SpaceX.API.Device.DishInhibitGpsRequest dish_inhibit_gps = 2014;
+     .SpaceX.API.Device.DishGetDataRequest dish_get_data = 2015;
+@@ -58,6 +58,11 @@
+     .SpaceX.API.Device.DishGetRssiScanResultRequest dish_get_rssi_scan_result = 2020;
+     .SpaceX.API.Device.DishFactoryResetRequest dish_factory_reset = 2021;
+     .SpaceX.API.Device.ResetButtonRequest reset_button = 2022;
++    .SpaceX.API.Device.SoftwareUpdateRequest set_per_vehicle_config = 2023;
++    .SpaceX.API.Device.DishAviationTestRequest dish_aviation_test = 2024;
++    .SpaceX.API.Device.DishInhibitRfRequest dish_inhibit_rf = 2026;
++    .SpaceX.API.Device.ZtlmQueryRequest ztlm_query = 2027;
++    .SpaceX.API.Device.DishStartTestModeServerRequest dish_start_test_mode_server = 2028;
+     .SpaceX.API.Device.WifiSetConfigRequest wifi_set_config = 3001;
+     .SpaceX.API.Device.WifiGetClientsRequest wifi_get_clients = 3002;
+     .SpaceX.API.Device.WifiSetupRequest wifi_setup = 3003;
+@@ -79,12 +84,19 @@
+     .SpaceX.API.Device.WifiRunSelfTestRequest wifi_run_self_test = 3028;
+     .SpaceX.API.Device.WifiBackhaulStatsRequest wifi_backhaul_stats = 3029;
+     .SpaceX.API.Device.WifiToggleUmbilicalModeRequest wifi_toggle_umbilical_mode = 3030;
++    .SpaceX.API.Device.WifiClientSandboxRequest wifi_client_sandbox = 3031;
++    .SpaceX.API.Device.WifiRunDebugNetsysRequest wifi_run_debug_netsys = 3032;
++    .SpaceX.API.Device.WifiResetEthPhyRequest wifi_reset_eth_phy = 3033;
++    .SpaceX.API.Device.WifiFlushHardwareNatRequest wifi_flush_hardware_nat = 3034;
++    .SpaceX.API.Device.WifiWriteCalibrationRequest wifi_write_calibration = 3035;
+     .SpaceX.API.Device.TransceiverIFLoopbackTestRequest transceiver_if_loopback_test = 4001;
+     .SpaceX.API.Device.TransceiverGetStatusRequest transceiver_get_status = 4003;
+     .SpaceX.API.Device.TransceiverGetTelemetryRequest transceiver_get_telemetry = 4004;
+     .SpaceX.API.Device.Services.Unlock.StartUnlockRequest start_unlock = 5000;
+     .SpaceX.API.Device.Services.Unlock.FinishUnlockRequest finish_unlock = 5001;
+     .SpaceX.API.Device.GetDiagnosticsRequest get_diagnostics = 6000;
++    .SpaceX.API.Device.GetGnssMeasurementRequest get_gnss_measurement = 7000;
+   }
+-  reserved 1018, 1025, 1026, 2016, 3011, 3014, 3202;
++  reserved 1018, 1025, 1026, 2012, 2016, 3011, 3014, 3202;
++  reserved "start_dish_self_test";
+ }

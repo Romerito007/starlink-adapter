@@ -1,0 +1,24 @@
+/home/romerito007/Documentos/Hibot-Projetos/GolandProject/starlink-adapter/starlink-go/proto_sync_20260328_124502/protoset_desc/WifiClient.txt:46:  float seconds_until_dhcp_lease_expires = 48;
+/home/romerito007/Documentos/Hibot-Projetos/GolandProject/starlink-adapter/starlink-go/proto_sync_20260328_124502/protoset_desc/WifiClient.txt:47:  bool dhcp_lease_found = 49;
+/home/romerito007/Documentos/Hibot-Projetos/GolandProject/starlink-adapter/starlink-go/proto_sync_20260328_124502/protoset_desc/WifiClient.txt:48:  .SpaceX.API.Device.WifiClient.Alerts alerts = 52;
+/home/romerito007/Documentos/Hibot-Projetos/GolandProject/starlink-adapter/starlink-go/proto_sync_20260328_124502/protoset_desc/WifiClient.txt:49:  string captive_client_id = 53;
+/home/romerito007/Documentos/Hibot-Projetos/GolandProject/starlink-adapter/starlink-go/proto_sync_20260328_124502/protoset_desc/WifiClient.txt:50:  uint32 upload_mb = 54;
+/home/romerito007/Documentos/Hibot-Projetos/GolandProject/starlink-adapter/starlink-go/proto_sync_20260328_124502/protoset_desc/WifiClient.txt:51:  uint32 download_mb = 55;
+/home/romerito007/Documentos/Hibot-Projetos/GolandProject/starlink-adapter/starlink-go/proto_sync_20260328_124502/protoset_desc/WifiClient.txt:52:  .SpaceX.API.Device.WifiClient.CaptiveState captive_state = 56;
+/home/romerito007/Documentos/Hibot-Projetos/GolandProject/starlink-adapter/starlink-go/proto_sync_20260328_124502/protoset_desc/WifiClient.txt:53:  .SpaceX.API.Device.WifiClient.SandboxState sandbox_state = 57;
+/home/romerito007/Documentos/Hibot-Projetos/GolandProject/starlink-adapter/starlink-go/proto_sync_20260328_124502/protoset_desc/WifiClient.txt:54:  bool rx_stats_valid = 60;
+/home/romerito007/Documentos/Hibot-Projetos/GolandProject/starlink-adapter/starlink-go/proto_sync_20260328_124502/protoset_desc/WifiClient.txt:55:  bool tx_stats_valid = 61;
+/home/romerito007/Documentos/Hibot-Projetos/GolandProject/starlink-adapter/starlink-go/proto_sync_20260328_124502/protoset_desc/WifiClient.txt:56:  message Alerts {
+/home/romerito007/Documentos/Hibot-Projetos/GolandProject/starlink-adapter/starlink-go/proto_sync_20260328_124502/protoset_desc/WifiClient.txt:93:    float rate_mbps_last_1m_avg = 16;
+/home/romerito007/Documentos/Hibot-Projetos/GolandProject/starlink-adapter/starlink-go/proto_sync_20260328_124502/protoset_desc/WifiClient.txt:94:    float throughput_mbps_last_1m_avg = 17;
+/home/romerito007/Documentos/Hibot-Projetos/GolandProject/starlink-adapter/starlink-go/proto_sync_20260328_124502/protoset_desc/WifiClient.txt:112:    CAPTIVE_STATE_NOT_CONFIGURED = 0;
+/home/romerito007/Documentos/Hibot-Projetos/GolandProject/starlink-adapter/starlink-go/proto_sync_20260328_124502/protoset_desc/WifiClient.txt:113:    CAPTIVE_STATE_UNKNOWN = 1;
+/home/romerito007/Documentos/Hibot-Projetos/GolandProject/starlink-adapter/starlink-go/proto_sync_20260328_124502/protoset_desc/WifiClient.txt:114:    CAPTIVE_STATE_CAPTIVE = 2;
+/home/romerito007/Documentos/Hibot-Projetos/GolandProject/starlink-adapter/starlink-go/proto_sync_20260328_124502/protoset_desc/WifiClient.txt:115:    CAPTIVE_STATE_NOT_CAPTIVE = 3;
+/home/romerito007/Documentos/Hibot-Projetos/GolandProject/starlink-adapter/starlink-go/proto_sync_20260328_124502/protoset_desc/WifiClient.txt:116:    CAPTIVE_STATE_PARTIALLY_CAPTIVE = 4;
+/home/romerito007/Documentos/Hibot-Projetos/GolandProject/starlink-adapter/starlink-go/proto_sync_20260328_124502/protoset_desc/WifiClient.txt:132:    SANDBOX_STATE_NOT_CONFIGURED = 0;
+/home/romerito007/Documentos/Hibot-Projetos/GolandProject/starlink-adapter/starlink-go/proto_sync_20260328_124502/protoset_desc/WifiClient.txt:133:    SANDBOX_STATE_UNKNOWN = 1;
+/home/romerito007/Documentos/Hibot-Projetos/GolandProject/starlink-adapter/starlink-go/proto_sync_20260328_124502/protoset_desc/WifiClient.txt:134:    SANDBOX_STATE_SANDBOXED = 2;
+/home/romerito007/Documentos/Hibot-Projetos/GolandProject/starlink-adapter/starlink-go/proto_sync_20260328_124502/protoset_desc/WifiClient.txt:135:    SANDBOX_STATE_UNSANDBOXED = 3;
+/home/romerito007/Documentos/Hibot-Projetos/GolandProject/starlink-adapter/starlink-go/proto_sync_20260328_124502/protoset_desc/WifiClient.txt:136:    SANDBOX_STATE_PARTIALLY_SANDBOXED = 4;
+/home/romerito007/Documentos/Hibot-Projetos/GolandProject/starlink-adapter/starlink-go/proto_sync_20260328_124502/protoset_desc/WifiGetStatusResponse.txt:11:  .SpaceX.API.Device.WifiAlerts alerts = 1010;

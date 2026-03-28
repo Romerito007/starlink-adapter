@@ -1,0 +1,284 @@
+{
+  "apiVersion": "124",
+  "getNetworkInterfaces": {
+    "networkInterfaces": [
+      {
+        "name": "lan0",
+        "rxStats": {},
+        "txStats": {},
+        "up": true,
+        "macAddress": "74:24:9f:ff:e0:bd",
+        "ethernet": {
+          "autonegotiationOn": true
+        }
+      },
+      {
+        "name": "lan1",
+        "rxStats": {
+          "bytes": "657829922",
+          "packets": "2810692"
+        },
+        "txStats": {
+          "bytes": "1031681818",
+          "packets": "2305137"
+        },
+        "up": true,
+        "macAddress": "74:24:9f:00:e0:bd",
+        "ipv6Addresses": [
+          "fe80::7624:9fff:fe00:e0bd/64"
+        ],
+        "ethernet": {
+          "linkDetected": true,
+          "speedMbps": 1000,
+          "autonegotiationOn": true,
+          "duplex": "FULL"
+        }
+      },
+      {
+        "name": "wan0",
+        "rxStats": {
+          "bytes": "1121055815",
+          "packets": "3090243"
+        },
+        "txStats": {
+          "bytes": "726004649",
+          "packets": "3195659"
+        },
+        "up": true,
+        "macAddress": "74:24:9f:ef:e0:bd",
+        "ipv4Addresses": [
+          "100.108.242.146/10"
+        ],
+        "ipv6Addresses": [
+          "2803:9810:6400:35c4:7624:9fff:feef:e0bd/64",
+          "fe80::7624:9fff:feef:e0bd/64"
+        ],
+        "ethernet": {
+          "linkDetected": true,
+          "speedMbps": 1000,
+          "autonegotiationOn": true,
+          "duplex": "FULL"
+        }
+      },
+      {
+        "name": "ra0",
+        "rxStats": {
+          "bytes": "22631001",
+          "packets": "92821"
+        },
+        "txStats": {
+          "bytes": "236590887",
+          "packets": "231086"
+        },
+        "up": true,
+        "macAddress": "c2:50:b4:23:34:9e",
+        "wifi": {
+          "invalidPacketCounts": {},
+          "channel": 11,
+          "linkQuality": 10,
+          "noiseLevel": 230
+        }
+      },
+      {
+        "name": "ra1",
+        "rxStats": {},
+        "txStats": {},
+        "up": true,
+        "macAddress": "c2:50:b4:53:34:9e",
+        "wifi": {
+          "invalidPacketCounts": {},
+          "channel": 11,
+          "linkQuality": 10,
+          "noiseLevel": 230
+        }
+      },
+      {
+        "name": "ra2",
+        "rxStats": {},
+        "txStats": {},
+        "up": true,
+        "macAddress": "c2:50:b4:83:34:9e",
+        "wifi": {
+          "invalidPacketCounts": {},
+          "channel": 11,
+          "linkQuality": 10,
+          "noiseLevel": 230
+        }
+      },
+      {
+        "name": "apcli0",
+        "rxStats": {},
+        "txStats": {},
+        "macAddress": "c6:50:b4:23:34:9e",
+        "wifi": {
+          "invalidPacketCounts": {}
+        }
+      },
+      {
+        "name": "rax0",
+        "rxStats": {
+          "bytes": "2888353",
+          "packets": "13349"
+        },
+        "txStats": {
+          "bytes": "17688528",
+          "packets": "22235"
+        },
+        "up": true,
+        "macAddress": "c2:50:b4:33:34:9e",
+        "wifi": {
+          "invalidPacketCounts": {},
+          "channel": 36,
+          "linkQuality": 10,
+          "noiseLevel": 230
+        }
+      },
+      {
+        "name": "rax1",
+        "rxStats": {},
+        "txStats": {},
+        "up": true,
+        "macAddress": "c2:50:b4:63:34:9e",
+        "wifi": {
+          "invalidPacketCounts": {},
+          "channel": 36,
+          "linkQuality": 10,
+          "noiseLevel": 230
+        }
+      },
+      {
+        "name": "apclix0",
+        "rxStats": {},
+        "txStats": {},
+        "macAddress": "ca:50:b4:23:34:9e",
+        "wifi": {
+          "invalidPacketCounts": {}
+        }
+      },
+      {
+        "name": "rai0",
+        "rxStats": {
+          "bytes": "7137293",
+          "packets": "33344"
+        },
+        "txStats": {
+          "bytes": "69250275",
+          "packets": "63918"
+        },
+        "up": true,
+        "macAddress": "c2:50:b4:43:34:9e",
+        "wifi": {
+          "invalidPacketCounts": {},
+          "channel": 149,
+          "linkQuality": 10,
+          "noiseLevel": 160
+        }
+      },
+      {
+        "name": "rai1",
+        "rxStats": {},
+        "txStats": {},
+        "up": true,
+        "macAddress": "c2:50:b4:73:34:9e",
+        "wifi": {
+          "invalidPacketCounts": {},
+          "channel": 149,
+          "linkQuality": 10,
+          "noiseLevel": 160
+        }
+      },
+      {
+        "name": "apclii0",
+        "rxStats": {},
+        "txStats": {},
+        "macAddress": "c6:50:b4:43:34:9e",
+        "wifi": {
+          "invalidPacketCounts": {}
+        }
+      },
+      {
+        "name": "br-backhaul",
+        "rxStats": {},
+        "txStats": {
+          "bytes": "458922",
+          "packets": "2303"
+        },
+        "up": true,
+        "macAddress": "74:24:9f:ff:e0:bd",
+        "ipv4Addresses": [
+          "192.168.2.1/24"
+        ],
+        "ipv6Addresses": [
+          "2803:9810:4367:7c00::1/61",
+          "fd50:b4c3:349e::1/61",
+          "fe80::7624:9fff:feff:e0bd/64"
+        ],
+        "bridge": {
+          "memberNames": [
+            "lan0.200",
+            "lan1.200",
+            "ra1",
+            "ra1.200",
+            "rai1",
+            "rai1.200",
+            "rax1",
+            "rax1.200"
+          ]
+        }
+      },
+      {
+        "name": "br-hiddenlan",
+        "rxStats": {},
+        "txStats": {},
+        "up": true,
+        "macAddress": "74:24:9f:ff:e0:bd",
+        "ipv4Addresses": [
+          "192.168.254.1/24"
+        ],
+        "bridge": {
+          "memberNames": [
+            "lan0.420",
+            "lan1.420",
+            "ra1.420",
+            "ra2",
+            "rai1.420",
+            "rax1.420"
+          ]
+        }
+      },
+      {
+        "name": "br-lan",
+        "rxStats": {
+          "bytes": "669501065",
+          "packets": "2857004"
+        },
+        "txStats": {
+          "bytes": "1096167977",
+          "packets": "2441557"
+        },
+        "up": true,
+        "macAddress": "74:24:9f:ff:e0:bd",
+        "ipv4Addresses": [
+          "192.168.1.1/24"
+        ],
+        "ipv6Addresses": [
+          "2803:9810:4367:7c08::1/61",
+          "fd50:b4c3:349e:8::1/61",
+          "fe80::7624:9fff:feff:e0bd/64"
+        ],
+        "bridge": {
+          "memberNames": [
+            "lan0",
+            "lan1",
+            "ra0",
+            "ra1.100",
+            "rai0",
+            "rai1.100",
+            "rax0",
+            "rax1.100"
+          ]
+        }
+      }
+    ]
+  }
+}

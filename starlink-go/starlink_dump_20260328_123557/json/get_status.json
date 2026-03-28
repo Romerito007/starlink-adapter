@@ -1,0 +1,438 @@
+{
+  "apiVersion": "124",
+  "wifiGetStatus": {
+    "deviceInfo": {
+      "id": "Router-0100000000000000016FE0BD",
+      "hardwareVersion": "v3",
+      "softwareVersion": "2026.03.11.mr72822",
+      "countryCode": "BR",
+      "softwarePartitionsEqual": true,
+      "bootcount": 43,
+      "antiRollbackVersion": 1,
+      "manufacturedVersion": "2024.09.17.mr40396",
+      "boardRev": 8,
+      "hardwareIndex": "ROUTER_GEN_3",
+      "boot": {
+        "countByReason": {
+          "0": 26,
+          "1": 3,
+          "2": 0,
+          "4": 13,
+          "5": 1
+        },
+        "lastReason": "POWER_CYCLE",
+        "lastCount": 43,
+        "evenSideSoftwareVersion": "2026.03.11.mr72822",
+        "oddSideSoftwareVersion": "2026.03.11.mr72822",
+        "apiVersionOddSide": 124,
+        "apiVersionEvenSide": 124
+      }
+    },
+    "deviceState": {
+      "uptimeS": "34183"
+    },
+    "ipv4WanAddress": "100.108.242.146/10",
+    "pingLatencyMs": 33.486,
+    "alerts": {},
+    "dishPingLatencyMs": 0.4643684,
+    "popPingLatencyMs": 28.4515,
+    "ipv6WanAddresses": [
+      "2803:9810:6400:35c4:7624:9fff:feef:e0bd/64",
+      "fe80::7624:9fff:feef:e0bd/64"
+    ],
+    "dhcpServers": [
+      {
+        "domain": "lan",
+        "subnet": "192.168.1.0/24",
+        "leases": [
+          {
+            "ipAddress": "192.168.1.102",
+            "macAddress": "f4:1e:57:XX:XX:XX",
+            "hostname": "R1-BORDA-STARLINK",
+            "expiresTime": "2026-03-28 16:06:49.966251743 +0000 UTC m=+36021.262833057",
+            "active": true,
+            "clientId": 154697957
+          },
+          {
+            "ipAddress": "192.168.1.204",
+            "macAddress": "44:e6:4a:XX:XX:XX",
+            "expiresTime": "2026-03-28 16:07:10.890316244 +0000 UTC m=+36042.186897635",
+            "active": true,
+            "clientId": 1304539991
+          },
+          {
+            "ipAddress": "192.168.1.79",
+            "macAddress": "e6:51:d1:XX:XX:XX",
+            "hostname": "Redmi-Note-11",
+            "expiresTime": "2026-03-28 16:03:39.68657549 +0000 UTC m=+35830.983157036",
+            "active": true,
+            "clientId": 3158853620
+          },
+          {
+            "ipAddress": "192.168.1.115",
+            "macAddress": "5a:42:23:XX:XX:XX",
+            "hostname": "iPhone",
+            "expiresTime": "2026-03-28 16:18:17.62178383 +0000 UTC m=+36708.918365298",
+            "active": true,
+            "clientId": 35462005
+          },
+          {
+            "ipAddress": "192.168.1.110",
+            "macAddress": "fe:db:2c:XX:XX:XX",
+            "hostname": "iPhone",
+            "expiresTime": "2026-03-28 16:13:43.396012592 +0000 UTC m=+36434.692593983",
+            "active": true,
+            "clientId": 3149081680
+          },
+          {
+            "ipAddress": "192.168.1.107",
+            "macAddress": "5a:31:d6:XX:XX:XX",
+            "hostname": "Galaxy-S20-FE-5G",
+            "expiresTime": "2026-03-28 12:05:45.009856925 +0000 UTC m=+21556.306438393",
+            "active": true,
+            "clientId": 962380495
+          }
+        ]
+      },
+      {
+        "domain": "backhaul",
+        "subnet": "192.168.2.0/24"
+      },
+      {
+        "domain": "hiddenlan",
+        "subnet": "192.168.254.0/24"
+      }
+    ],
+    "poeStats": {
+      "poeState": "POE_STATE_ON",
+      "poePower": 9.793811,
+      "vsnsVin": 56.742672
+    },
+    "dishId": "ut11a88593-46207c02-599eb897",
+    "utcNs": "1774712157997074736",
+    "softwareUpdateStats": {
+      "state": "NO_UPDATE_REQUIRED",
+      "secondsSinceGetTargetVersions": 2312.9375,
+      "runningVersion": "2026.03.11.mr72822"
+    },
+    "setupRequirement": {
+      "state": "REQUIRED_COMPLETE"
+    },
+    "popIpv6PingLatencyMs": 31.2635,
+    "secsSinceLastPublicIpv4Change": 33878.234,
+    "dishDisablementCode": "OKAY",
+    "calibrationPartitionsState": "CALIBRATION_PARTITIONS_STATE_ABSENT_BOTH_SIDES",
+    "config": {
+      "countryCode": "BR",
+      "setupComplete": true,
+      "macWan": "74:24:9f:ef:e0:bd",
+      "macLan": "74:24:9f:ff:e0:bd",
+      "bootCount": 43,
+      "incarnation": "427212291067557022",
+      "wanHostDscpMark": 1,
+      "networks": [
+        {
+          "ipv4": "192.168.1.1/24",
+          "basicServiceSets": [
+            {
+              "bssid": "c2:50:b4:23:34:9e",
+              "ssid": "CT_SOLUCÕES",
+              "band": "RF_2GHZ",
+              "ifaceName": "ra0",
+              "authWpa2": {
+                "password": "•••••"
+              }
+            },
+            {
+              "bssid": "c2:50:b4:33:34:9e",
+              "ssid": "CT_SOLUCÕES_5G",
+              "band": "RF_5GHZ",
+              "ifaceName": "rax0",
+              "authWpa2": {
+                "password": "•••••"
+              }
+            },
+            {
+              "bssid": "c2:50:b4:43:34:9e",
+              "ssid": "CT_SOLUCÕES_5G",
+              "band": "RF_5GHZ_HIGH",
+              "ifaceName": "rai0",
+              "authWpa2": {
+                "password": "•••••"
+              }
+            }
+          ],
+          "domain": "lan",
+          "dhcpv4Start": 20,
+          "vlan": 100,
+          "dhcpv4LeaseDurationS": 3600,
+          "dhcpv4End": 254
+        }
+      ],
+      "boot": {
+        "countByReason": {
+          "0": 26,
+          "1": 3,
+          "2": 0,
+          "4": 13,
+          "5": 1
+        },
+        "lastReason": "POWER_CYCLE",
+        "lastCount": 43,
+        "evenSideSoftwareVersion": "2026.03.11.mr72822",
+        "oddSideSoftwareVersion": "2026.03.11.mr72822",
+        "apiVersionOddSide": 124,
+        "apiVersionEvenSide": 124
+      },
+      "wanAckSuppression": {
+        "htbAckQueueRate": 2,
+        "htbAckQueueCeil": 2.5,
+        "cakeQueueBandwidth": 1.75,
+        "cakeAckFilterAggressive": true
+      }
+    },
+    "clients": [
+      {
+        "name": "Controller",
+        "macAddress": "74:24:9f:ff:e0:bd",
+        "rxStats": {},
+        "txStats": {},
+        "iface": "ETH",
+        "role": "CONTROLLER",
+        "deviceId": "Router-0100000000000000016FE0BD"
+      },
+      {
+        "name": "R1-BORDA-STARLINK",
+        "macAddress": "f4:1e:57:XX:XX:XX",
+        "ipAddress": "192.168.1.102",
+        "rxStats": {},
+        "txStats": {},
+        "iface": "ETH",
+        "upstreamMacAddress": "74:24:9f:ff:e0:bd",
+        "role": "CLIENT",
+        "domain": "lan",
+        "hopsFromController": 1,
+        "clientId": 154697957,
+        "dhcpLeaseActive": true,
+        "dhcpLeaseRenewed": true,
+        "secondsUntilDhcpLeaseExpires": 1852.8074,
+        "dhcpLeaseFound": true,
+        "alerts": {},
+        "captiveClientId": "e5803809cd37c58f7bf26a623906a92ab3062662a1fa42b6372075c297e71386",
+        "uploadMb": 458,
+        "downloadMb": 14359
+      },
+      {
+        "macAddress": "44:e6:4a:XX:XX:XX",
+        "ipAddress": "192.168.1.204",
+        "signalStrength": -36,
+        "rxStats": {
+          "bytes": "3715327",
+          "nss": 1,
+          "mcs": 7,
+          "bandwidth": 20,
+          "guardNs": 400,
+          "rateMbps": 72,
+          "phyMode": 2,
+          "rateMbpsLast15s": 72,
+          "rateMbpsLast1mAvg": 72
+        },
+        "txStats": {
+          "bytes": "5502260",
+          "nss": 1,
+          "mcs": 7,
+          "bandwidth": 20,
+          "guardNs": 400,
+          "rateMbps": 72,
+          "phyMode": 2,
+          "rateMbpsLast30s": 69.63333,
+          "rateMbpsLast15s": 72
+        },
+        "associatedTimeS": 32809,
+        "iface": "RF_2GHZ",
+        "snr": 58,
+        "channelWidth": 20,
+        "upstreamMacAddress": "74:24:9f:ff:e0:bd",
+        "role": "CLIENT",
+        "domain": "lan",
+        "ifaceName": "ra0",
+        "steerState": 2,
+        "hopsFromController": 1,
+        "clientId": 1304539991,
+        "noDataIdleS": 3,
+        "dhcpLeaseActive": true,
+        "dhcpLeaseRenewed": true,
+        "secondsUntilDhcpLeaseExpires": 1873.7314,
+        "dhcpLeaseFound": true,
+        "alerts": {},
+        "captiveClientId": "57b3c14d4d517f023f30a97c6cc291c2316f4ff23a038e8d925fd36bb249e218",
+        "rxStatsValid": true,
+        "txStatsValid": true
+      },
+      {
+        "name": "Redmi-Note-11",
+        "macAddress": "e6:51:d1:XX:XX:XX",
+        "ipAddress": "192.168.1.79",
+        "signalStrength": -97,
+        "rxStats": {
+          "bytes": "39470993",
+          "nss": 1,
+          "bandwidth": 80,
+          "guardNs": 800,
+          "rateMbps": 6,
+          "phyMode": 1,
+          "rateMbpsLast15s": 6,
+          "rateMbpsLast1mAvg": 6
+        },
+        "txStats": {
+          "bytes": "1580196",
+          "nss": 1,
+          "bandwidth": 20,
+          "guardNs": 800,
+          "rateMbps": 6,
+          "phyMode": 1,
+          "rateMbpsLast30s": 6,
+          "rateMbpsLast15s": 6
+        },
+        "associatedTimeS": 1861,
+        "iface": "RF_5GHZ_HIGH",
+        "snr": -9,
+        "channelWidth": 80,
+        "upstreamMacAddress": "74:24:9f:ff:e0:bd",
+        "role": "CLIENT",
+        "domain": "lan",
+        "dot11vSupport": true,
+        "ifaceName": "rai0",
+        "steerState": 2,
+        "hopsFromController": 1,
+        "ipv6Addresses": [
+          "fe80::e451:d1ff:fe13:4377",
+          "2803:9810:4367:7c08:e451:d1ff:fe13:4377",
+          "fd50:b4c3:349e:8:b893:e209:9b56:cfc4",
+          "fd50:b4c3:349e:8:e451:d1ff:fe13:4377"
+        ],
+        "clientId": 3158853620,
+        "noDataIdleS": 425,
+        "dhcpLeaseActive": true,
+        "secondsUntilDhcpLeaseExpires": 1662.5277,
+        "dhcpLeaseFound": true,
+        "alerts": {},
+        "captiveClientId": "f44748bc979aad3d4c3b24681a6e33a20d76846a401e2ee10de9383bf55487d5",
+        "downloadMb": 22,
+        "rxStatsValid": true,
+        "txStatsValid": true
+      },
+      {
+        "name": "iPhone",
+        "macAddress": "5a:42:23:XX:XX:XX",
+        "ipAddress": "192.168.1.115",
+        "signalStrength": -87,
+        "rxStats": {
+          "bytes": "1639507",
+          "nss": 1,
+          "bandwidth": 20,
+          "guardNs": 800,
+          "rateMbps": 1,
+          "rateMbpsLast15s": 1,
+          "rateMbpsLast1mAvg": 1
+        },
+        "txStats": {
+          "bytes": "373548",
+          "nss": 1,
+          "mcs": 1,
+          "bandwidth": 20,
+          "guardNs": 800,
+          "rateMbps": 2,
+          "rateMbpsLast30s": 2,
+          "rateMbpsLast15s": 2
+        },
+        "associatedTimeS": 1868,
+        "iface": "RF_2GHZ",
+        "snr": 7,
+        "channelWidth": 20,
+        "upstreamMacAddress": "74:24:9f:ff:e0:bd",
+        "role": "CLIENT",
+        "domain": "lan",
+        "dot11vSupport": true,
+        "ifaceName": "ra0",
+        "steerState": 2,
+        "hopsFromController": 1,
+        "ipv6Addresses": [
+          "2803:9810:4367:7c08:3d96:a7d5:a026:625c",
+          "fd50:b4c3:349e:8:814:c196:ffdd:19bf",
+          "2803:9810:4367:7c08:1015:810:66ed:5ab4",
+          "fe80::4a4:4a5b:e63d:e24"
+        ],
+        "clientId": 35462005,
+        "noDataIdleS": 433,
+        "dhcpLeaseActive": true,
+        "dhcpLeaseRenewed": true,
+        "secondsUntilDhcpLeaseExpires": 2540.463,
+        "dhcpLeaseFound": true,
+        "alerts": {},
+        "captiveClientId": "751b1d02394e05ef850ef2674149a6f79f84eaac88d0567022c6ceeef8f49d8b",
+        "downloadMb": 1,
+        "rxStatsValid": true,
+        "txStatsValid": true
+      },
+      {
+        "name": "iPhone",
+        "macAddress": "fe:db:2c:XX:XX:XX",
+        "ipAddress": "192.168.1.110",
+        "signalStrength": -76,
+        "rxStats": {
+          "bytes": "146533857",
+          "nss": 1,
+          "mcs": 3,
+          "bandwidth": 20,
+          "guardNs": 800,
+          "rateMbps": 34,
+          "phyMode": 8,
+          "rateMbpsLast15s": 34,
+          "rateMbpsLast1mAvg": 34
+        },
+        "txStats": {
+          "bytes": "7589129",
+          "nss": 1,
+          "bandwidth": 20,
+          "guardNs": 800,
+          "rateMbps": 6,
+          "phyMode": 1,
+          "rateMbpsLast30s": 6,
+          "rateMbpsLast15s": 6
+        },
+        "associatedTimeS": 1281,
+        "iface": "RF_2GHZ",
+        "snr": 18,
+        "channelWidth": 20,
+        "upstreamMacAddress": "74:24:9f:ff:e0:bd",
+        "role": "CLIENT",
+        "domain": "lan",
+        "dot11vSupport": true,
+        "ifaceName": "ra0",
+        "steerState": 2,
+        "hopsFromController": 1,
+        "ipv6Addresses": [
+          "fe80::4ff:7ce7:ddce:13e6",
+          "fd50:b4c3:349e:8:8ed:9b6e:5dff:3a47",
+          "fd50:b4c3:349e:8:c77:29a5:2172:56",
+          "fe80::c9f:4704:4272:e89",
+          "2803:9810:4367:7c08:c012:2b9e:c948:1e6e"
+        ],
+        "clientId": 3149081680,
+        "noDataIdleS": 438,
+        "dhcpLeaseActive": true,
+        "secondsUntilDhcpLeaseExpires": 2266.237,
+        "dhcpLeaseFound": true,
+        "alerts": {},
+        "captiveClientId": "502cb3bb1dd5e095477d64746efc8f12b99b8cb281728b5cc48d24264d6dbd82",
+        "downloadMb": 103,
+        "rxStatsValid": true,
+        "txStatsValid": true
+      }
+    ],
+    "hasClientIndex": true,
+    "clientIndex": 1,
+    "radiusStats": {}
+  }
+}

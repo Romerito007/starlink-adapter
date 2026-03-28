@@ -1,0 +1,12 @@
+--- /home/romerito007/Documentos/Hibot-Projetos/GolandProject/starlink-adapter/starlink-go/proto_sync_20260328_124502/repo_desc/DhcpLease.txt	2026-03-28 12:45:02.409556186 -0300
++++ /home/romerito007/Documentos/Hibot-Projetos/GolandProject/starlink-adapter/starlink-go/proto_sync_20260328_124502/protoset_desc/DhcpLease.txt	2026-03-28 12:45:02.149554007 -0300
+@@ -0,0 +1,9 @@
++SpaceX.API.Device.DhcpLease is a message:
++message DhcpLease {
++  string ip_address = 1;
++  string mac_address = 2;
++  string hostname = 3;
++  string expires_time = 4;
++  bool active = 5;
++  uint32 client_id = 6;
++}

@@ -1,0 +1,74 @@
+{
+  "apiVersion": "125",
+  "wifiGetConfig": {
+    "wifiConfig": {
+      "countryCode": "BR",
+      "setupComplete": true,
+      "macWan": "74:24:9f:e5:5a:b9",
+      "macLan": "74:24:9f:f5:5a:b9",
+      "bootCount": 53,
+      "incarnation": "9785295679956603203",
+      "wanHostDscpMark": 1,
+      "networks": [
+        {
+          "ipv4": "192.168.1.1/24",
+          "basicServiceSets": [
+            {
+              "bssid": "5a:93:81:2a:51:43",
+              "ssid": "CT_SOLUCOES 2",
+              "band": "RF_2GHZ",
+              "ifaceName": "ra0",
+              "authWpa2": {
+                "password": "•••••"
+              }
+            },
+            {
+              "bssid": "5a:93:81:3a:51:43",
+              "ssid": "CT_SOLUCOES 2",
+              "band": "RF_5GHZ",
+              "ifaceName": "rax0",
+              "authWpa2": {
+                "password": "•••••"
+              }
+            },
+            {
+              "bssid": "5a:93:81:4a:51:43",
+              "ssid": "CT_SOLUCOES 2",
+              "band": "RF_5GHZ_HIGH",
+              "ifaceName": "rai0",
+              "authWpa2": {
+                "password": "•••••"
+              }
+            }
+          ],
+          "domain": "lan",
+          "dhcpv4Start": 20,
+          "vlan": 100,
+          "dhcpv4LeaseDurationS": 3600,
+          "dhcpv4End": 254
+        }
+      ],
+      "boot": {
+        "countByReason": {
+          "0": 22,
+          "1": 19,
+          "2": 0,
+          "4": 11,
+          "5": 1
+        },
+        "lastReason": "POWER_CYCLE",
+        "lastCount": 53,
+        "evenSideSoftwareVersion": "2026.03.15.mr73128",
+        "oddSideSoftwareVersion": "2026.03.15.mr73128",
+        "apiVersionOddSide": 125,
+        "apiVersionEvenSide": 125
+      },
+      "wanAckSuppression": {
+        "htbAckQueueRate": 2,
+        "htbAckQueueCeil": 2.5,
+        "cakeQueueBandwidth": 1.75,
+        "cakeAckFilterAggressive": true
+      }
+    }
+  }
+}

@@ -1,0 +1,57 @@
+proto/spacex/api/device/device.proto:494:  float upload_mbps = 1;
+proto/spacex/api/device/device.proto:496:  float download_mbps = 2;
+proto/spacex/api/device/device.proto:546:  float download_mbps = 4 [deprecated = true];
+proto/spacex/api/device/device.proto:548:  float upload_mbps = 5 [deprecated = true];
+proto/spacex/api/device/device.proto:554:  float download_mbps_1_tcp_conn = 7;
+proto/spacex/api/device/device.proto:556:  float upload_mbps_1_tcp_conn = 8;
+proto/spacex/api/device/device.proto:558:  float download_mbps_4_tcp_conn = 9;
+proto/spacex/api/device/device.proto:560:  float upload_mbps_4_tcp_conn = 10;
+proto/spacex/api/device/device.proto:562:  float download_mbps_16_tcp_conn = 11;
+proto/spacex/api/device/device.proto:564:  float upload_mbps_16_tcp_conn = 12;
+proto/spacex/api/device/device.proto:566:  float download_mbps_64_tcp_conn = 13;
+proto/spacex/api/device/device.proto:568:  float upload_mbps_64_tcp_conn = 14;
+proto/spacex/api/device/device.proto:952:  Alerts alerts = 5;
+proto/spacex/api/device/device.proto:958:  message Alerts {
+proto/spacex/api/device/wifi.proto:71:  float upload_mbps = 3;
+proto/spacex/api/device/wifi.proto:73:  float download_mbps = 4;
+proto/spacex/api/device/wifi.proto:494:message WifiAlerts {
+proto/spacex/api/device/wifi.proto:567:  WifiAlerts alerts = 1010;
+proto/spacex/api/device/wifi.proto:1084:  google.protobuf.FloatValue client_speedtest_router_download_mbps = 700;
+proto/spacex/api/device/wifi.proto:1086:  google.protobuf.FloatValue client_speedtest_router_upload_mbps = 701;
+proto/spacex/api/device/wifi.proto:1090:  google.protobuf.FloatValue client_speedtest_wifi_download_mbps = 703;
+proto/spacex/api/device/wifi.proto:1092:  google.protobuf.FloatValue client_speedtest_wifi_upload_mbps = 704;
+proto/spacex/api/device/wifi.proto:1094:  google.protobuf.FloatValue client_speedtest_client_download_mbps = 705;
+proto/spacex/api/device/wifi.proto:1096:  google.protobuf.FloatValue client_speedtest_client_upload_mbps = 706;
+proto/spacex/api/device/wifi.proto:1110:  google.protobuf.FloatValue speedtest_tcp_8_download_mbps_avg = 800;
+proto/spacex/api/device/wifi.proto:1112:  google.protobuf.FloatValue speedtest_tcp_8_download_mbps_max = 801;
+proto/spacex/api/device/wifi.proto:1114:  google.protobuf.FloatValue speedtest_tcp_8_upload_mbps_avg = 802;
+proto/spacex/api/device/wifi.proto:1116:  google.protobuf.FloatValue speedtest_tcp_8_upload_mbps_max = 803;
+proto/spacex/api/device/wifi.proto:1118:  google.protobuf.FloatValue speedtest_tcp_64_download_mbps_avg = 804;
+proto/spacex/api/device/wifi.proto:1120:  google.protobuf.FloatValue speedtest_tcp_64_download_mbps_max = 805;
+proto/spacex/api/device/wifi.proto:1122:  google.protobuf.FloatValue speedtest_tcp_64_upload_mbps_avg = 806;
+proto/spacex/api/device/wifi.proto:1124:  google.protobuf.FloatValue speedtest_tcp_64_upload_mbps_max = 807;
+proto/spacex/api/device/wifi.proto:1207:message starlink_router_alerts {
+proto/spacex/api/device/wifi.proto:1258:  google.protobuf.FloatValue client_download_mbps_avg = 6;
+proto/spacex/api/device/wifi.proto:1260:  google.protobuf.FloatValue client_upload_mbps_avg = 7;
+proto/spacex/api/device/wifi.proto:1270:  google.protobuf.FloatValue router_download_mbps_avg = 19;
+proto/spacex/api/device/wifi.proto:1272:  google.protobuf.FloatValue router_upload_mbps_avg = 20;
+proto/spacex/api/device/wifi.proto:1282:  google.protobuf.FloatValue wifi_download_mbps_avg = 25;
+proto/spacex/api/device/wifi.proto:1284:  google.protobuf.FloatValue wifi_upload_mbps_avg = 26;
+proto/spacex/api/device/wifi.proto:1336:  google.protobuf.FloatValue speedtest_upload_mbps = 124;
+proto/spacex/api/device/wifi.proto:1338:  google.protobuf.FloatValue speedtest_download_mbps = 125;
+proto/spacex/api/device/wifi.proto:1618:  google.protobuf.FloatValue client_speedtest_router_download_mbps = 700;
+proto/spacex/api/device/wifi.proto:1620:  google.protobuf.FloatValue client_speedtest_router_upload_mbps = 701;
+proto/spacex/api/device/wifi.proto:1624:  google.protobuf.FloatValue client_speedtest_wifi_download_mbps = 703;
+proto/spacex/api/device/wifi.proto:1626:  google.protobuf.FloatValue client_speedtest_wifi_upload_mbps = 704;
+proto/spacex/api/device/wifi.proto:1628:  google.protobuf.FloatValue client_speedtest_client_download_mbps = 705;
+proto/spacex/api/device/wifi.proto:1630:  google.protobuf.FloatValue client_speedtest_client_upload_mbps = 706;
+proto/spacex/api/device/wifi.proto:1644:  google.protobuf.FloatValue speedtest_tcp_8_download_mbps_avg = 800;
+proto/spacex/api/device/wifi.proto:1646:  google.protobuf.FloatValue speedtest_tcp_8_download_mbps_max = 801;
+proto/spacex/api/device/wifi.proto:1648:  google.protobuf.FloatValue speedtest_tcp_8_upload_mbps_avg = 802;
+proto/spacex/api/device/wifi.proto:1650:  google.protobuf.FloatValue speedtest_tcp_8_upload_mbps_max = 803;
+proto/spacex/api/device/wifi.proto:1652:  google.protobuf.FloatValue speedtest_tcp_64_download_mbps_avg = 804;
+proto/spacex/api/device/wifi.proto:1654:  google.protobuf.FloatValue speedtest_tcp_64_download_mbps_max = 805;
+proto/spacex/api/device/wifi.proto:1656:  google.protobuf.FloatValue speedtest_tcp_64_upload_mbps_avg = 806;
+proto/spacex/api/device/wifi.proto:1658:  google.protobuf.FloatValue speedtest_tcp_64_upload_mbps_max = 807;
+proto/spacex/api/device/dish.proto:132:  DishAlerts alerts = 1005;
+proto/spacex/api/device/dish.proto:208:message DishAlerts {

@@ -1,0 +1,93 @@
+{
+  "apiVersion": "125",
+  "wifiGetClients": {
+    "clients": [
+      {
+        "name": "Controller",
+        "macAddress": "74:24:9f:f5:5a:b9",
+        "rxStats": {},
+        "txStats": {},
+        "iface": "ETH",
+        "role": "CONTROLLER",
+        "deviceId": "Router-010000000000000001655AB9"
+      },
+      {
+        "name": "R1-BORDA-STARLINK",
+        "macAddress": "f4:1e:57:XX:XX:XX",
+        "ipAddress": "192.168.1.131",
+        "rxStats": {},
+        "txStats": {},
+        "iface": "ETH",
+        "upstreamMacAddress": "74:24:9f:f5:5a:b9",
+        "role": "CLIENT",
+        "domain": "lan",
+        "hopsFromController": 1,
+        "clientId": 1973751150,
+        "dhcpLeaseActive": true,
+        "dhcpLeaseRenewed": true,
+        "secondsUntilDhcpLeaseExpires": 2308.6804,
+        "dhcpLeaseFound": true,
+        "alerts": {},
+        "captiveClientId": "6e0da575d813d656b31bfafeed7e6497e26e5fdf63263fee81448a6aa3c2afd2",
+        "uploadMb": 416,
+        "downloadMb": 15474
+      },
+      {
+        "name": "Galaxy-S20-FE-5G",
+        "macAddress": "62:02:fd:XX:XX:XX",
+        "ipAddress": "192.168.1.195",
+        "signalStrength": -72,
+        "rxStats": {
+          "bytes": "41713",
+          "nss": 2,
+          "mcs": 3,
+          "bandwidth": 20,
+          "guardNs": 800,
+          "rateMbps": 68,
+          "phyMode": 8,
+          "rateMbpsLast15s": 68,
+          "rateMbpsLast1mAvg": 94.17242
+        },
+        "txStats": {
+          "bytes": "7576",
+          "nss": 1,
+          "bandwidth": 20,
+          "guardNs": 800,
+          "rateMbps": 6,
+          "phyMode": 1,
+          "rateMbpsLast30s": 7.172414,
+          "rateMbpsLast15s": 6.285714
+        },
+        "associatedTimeS": 79,
+        "iface": "RF_2GHZ",
+        "snr": 22,
+        "channelWidth": 20,
+        "upstreamMacAddress": "74:24:9f:f5:5a:b9",
+        "role": "CLIENT",
+        "domain": "lan",
+        "dot11vSupport": true,
+        "ifaceName": "ra0",
+        "steerReqFailAndDissocLast1h": 1,
+        "hopsFromController": 1,
+        "ipv6Addresses": [
+          "2803:9810:46f6:d808:40ed:6b0e:c833:a2d0",
+          "2803:9810:46f6:d808:6002:fdff:feb8:907e",
+          "fd93:81fa:5143:8:40ed:6b0e:c833:a2d0",
+          "fe80::6002:fdff:feb8:907e"
+        ],
+        "clientId": 4103292039,
+        "noDataIdleS": 3,
+        "dhcpLeaseActive": true,
+        "secondsUntilDhcpLeaseExpires": 2123.7402,
+        "dhcpLeaseFound": true,
+        "alerts": {},
+        "captiveClientId": "874493f4a3c614ce3d5ce3721ab8677ceb6a0abebb1d7d0646089a1fd2aa6979",
+        "downloadMb": 21,
+        "rxStatsValid": true,
+        "txStatsValid": true
+      }
+    ],
+    "hasClientIndex": true,
+    "clientIndex": 1
+  }
+}

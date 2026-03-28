@@ -1,0 +1,59 @@
+--- /home/romerito007/Documentos/Hibot-Projetos/GolandProject/starlink-adapter/starlink-go/proto_sync_20260328_124502/repo_desc/WifiClient.txt	2026-03-28 12:45:02.361555784 -0300
++++ /home/romerito007/Documentos/Hibot-Projetos/GolandProject/starlink-adapter/starlink-go/proto_sync_20260328_124502/protoset_desc/WifiClient.txt	2026-03-28 12:45:02.112553697 -0300
+@@ -43,6 +43,19 @@
+   uint32 no_data_idle_s = 45;
+   bool dhcp_lease_active = 46;
+   bool dhcp_lease_renewed = 47;
++  float seconds_until_dhcp_lease_expires = 48;
++  bool dhcp_lease_found = 49;
++  .SpaceX.API.Device.WifiClient.Alerts alerts = 52;
++  string captive_client_id = 53;
++  uint32 upload_mb = 54;
++  uint32 download_mb = 55;
++  .SpaceX.API.Device.WifiClient.CaptiveState captive_state = 56;
++  .SpaceX.API.Device.WifiClient.SandboxState sandbox_state = 57;
++  bool rx_stats_valid = 60;
++  bool tx_stats_valid = 61;
++  message Alerts {
++    bool throughput_limited = 1;
++  }
+   message FqcodelInfo {
+     uint64 enqs_hi_prio = 1;
+     uint64 enqs_fqcodel = 2;
+@@ -77,6 +90,8 @@
+     uint32 phy_mode = 13;
+     float rate_mbps_last_30s = 14;
+     float rate_mbps_last_15s = 15;
++    float rate_mbps_last_1m_avg = 16;
++    float throughput_mbps_last_1m_avg = 17;
+     reserved 4;
+   }
+   message TxStats {
+@@ -93,6 +108,13 @@
+     float rate_mbps_last_15s = 12;
+     reserved 4;
+   }
++  enum CaptiveState {
++    CAPTIVE_STATE_NOT_CONFIGURED = 0;
++    CAPTIVE_STATE_UNKNOWN = 1;
++    CAPTIVE_STATE_CAPTIVE = 2;
++    CAPTIVE_STATE_NOT_CAPTIVE = 3;
++    CAPTIVE_STATE_PARTIALLY_CAPTIVE = 4;
++  }
+   enum Interface {
+     UNKNOWN = 0;
+     ETH = 1;
+@@ -106,4 +128,13 @@
+     REPEATER = 2;
+     CONTROLLER = 3;
+   }
++  enum SandboxState {
++    SANDBOX_STATE_NOT_CONFIGURED = 0;
++    SANDBOX_STATE_UNKNOWN = 1;
++    SANDBOX_STATE_SANDBOXED = 2;
++    SANDBOX_STATE_UNSANDBOXED = 3;
++    SANDBOX_STATE_PARTIALLY_SANDBOXED = 4;
++  }
++  reserved 50, 51;
++  reserved "authorized", "sandbox_client_id";
+ }

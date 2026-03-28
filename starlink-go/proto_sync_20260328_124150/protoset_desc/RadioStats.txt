@@ -1,0 +1,21 @@
+SpaceX.API.Device.RadioStats is a message:
+message RadioStats {
+  .SpaceX.API.Device.WifiConfig.Band band = 1;
+  .SpaceX.API.Device.NetworkInterface.RxStats rx_stats = 2;
+  .SpaceX.API.Device.NetworkInterface.TxStats tx_stats = 3;
+  .SpaceX.API.Device.RadioStats.ThermalStatus thermal_status = 4;
+  .SpaceX.API.Device.RadioStats.AntennaStatus antenna_status = 5;
+  message AntennaStatus {
+    float rssi1 = 1;
+    float rssi2 = 2;
+    float rssi3 = 3;
+    float rssi4 = 4;
+  }
+  message ThermalStatus {
+    uint32 level = 1;
+    uint32 temp = 2 [deprecated = true];
+    double temp2 = 3;
+    uint32 power_reduction = 4;
+    uint32 duty_cycle = 5;
+  }
+}

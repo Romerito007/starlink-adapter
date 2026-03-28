@@ -1,0 +1,24 @@
+SpaceX.API.Device.NetworkInterface is a message:
+message NetworkInterface {
+  string name = 1;
+  .SpaceX.API.Device.NetworkInterface.RxStats rx_stats = 2;
+  .SpaceX.API.Device.NetworkInterface.TxStats tx_stats = 3;
+  bool up = 4;
+  string mac_address = 5;
+  repeated string ipv4_addresses = 6;
+  repeated string ipv6_addresses = 7;
+  oneof interface {
+    .SpaceX.API.Device.EthernetNetworkInterface ethernet = 1000;
+    .SpaceX.API.Device.WifiNetworkInterface wifi = 1001;
+    .SpaceX.API.Device.BridgeNetworkInterface bridge = 1002;
+  }
+  message RxStats {
+    uint64 bytes = 1;
+    uint64 packets = 2;
+    uint64 frame_errors = 3;
+  }
+  message TxStats {
+    uint64 bytes = 1;
+    uint64 packets = 2;
+  }
+}

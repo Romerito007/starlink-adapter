@@ -1,0 +1,73 @@
+{
+  "apiVersion": "124",
+  "getRadioStats": {
+    "radioStats": [
+      {
+        "band": "RF_2GHZ",
+        "rxStats": {
+          "bytes": "22642761",
+          "packets": "1237762",
+          "frameErrors": "235431"
+        },
+        "txStats": {
+          "bytes": "236615094",
+          "packets": "231209"
+        },
+        "thermalStatus": {
+          "temp2": 69,
+          "dutyCycle": 100
+        },
+        "antennaStatus": {
+          "rssi1": -31,
+          "rssi2": -26,
+          "rssi3": -44,
+          "rssi4": -46
+        }
+      },
+      {
+        "band": "RF_5GHZ",
+        "rxStats": {
+          "bytes": "2888353",
+          "packets": "16782",
+          "frameErrors": "525176"
+        },
+        "txStats": {
+          "bytes": "17688528",
+          "packets": "22235"
+        },
+        "thermalStatus": {
+          "temp2": 71,
+          "dutyCycle": 100
+        },
+        "antennaStatus": {
+          "rssi1": "NaN",
+          "rssi2": "NaN",
+          "rssi3": "NaN",
+          "rssi4": "NaN"
+        }
+      },
+      {
+        "band": "RF_5GHZ_HIGH",
+        "rxStats": {
+          "bytes": "7137293",
+          "packets": "632410",
+          "frameErrors": "115407"
+        },
+        "txStats": {
+          "bytes": "69250275",
+          "packets": "63918"
+        },
+        "thermalStatus": {
+          "temp2": 70,
+          "dutyCycle": 100
+        },
+        "antennaStatus": {
+          "rssi1": "NaN",
+          "rssi2": "NaN",
+          "rssi3": "NaN",
+          "rssi4": "NaN"
+        }
+      }
+    ]
+  }
+}
