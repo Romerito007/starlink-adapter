@@ -52,7 +52,8 @@ message HealthCheck {
 }
 
 message Request {
-  reserved 1018, 1025, 1026, 2016, 3011, 3014, 3202;
+  reserved 1018, 1025, 1026, 2012, 2016, 3011, 3014, 3202;
+  reserved "start_dish_self_test";
 
   uint64 id = 1;
 
@@ -137,8 +138,6 @@ message Request {
 
     DishStowRequest dish_stow = 2002;
 
-    StartDishSelfTestRequest start_dish_self_test = 2012;
-
     DishGetContextRequest dish_get_context = 2003;
 
     DishGetObstructionMapRequest dish_get_obstruction_map = 2008;
@@ -168,6 +167,8 @@ message Request {
     DishFactoryResetRequest dish_factory_reset = 2021;
 
     ResetButtonRequest reset_button = 2022;
+
+    SoftwareUpdateRequest set_per_vehicle_config = 2023;
 
     WifiGetClientsRequest wifi_get_clients = 3002;
 
@@ -226,7 +227,8 @@ message Request {
 }
 
 message Response {
-  reserved 1018, 1026, 2014, 2025, 3008, 3011, 3014, 3203;
+  reserved 1018, 1026, 2012, 2014, 2025, 3008, 3011, 3014, 3203;
+  reserved "start_dish_self_test";
 
   uint64 id = 1;
 
@@ -302,8 +304,6 @@ message Response {
     DishGetObstructionMapResponse dish_get_obstruction_map = 2008;
 
     DishStowResponse dish_stow = 2002;
-
-    StartDishSelfTestResponse start_dish_self_test = 2012;
 
     DishSetEmcResponse dish_set_emc = 2007;
 

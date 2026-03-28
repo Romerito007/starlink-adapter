@@ -3,6 +3,7 @@ package client
 import (
 	"math"
 	"sort"
+	"strconv"
 	"strings"
 
 	pb "github.com/Romerito007/starlink-adapter/starlink-go/proto/gen/spacex/api/device"
@@ -79,10 +80,10 @@ func mapStatusDetailedFromWifi(in *pb.WifiGetStatusResponse) *StatusDetailed {
 		PopPingLatencyMs:              in.GetPopPingLatencyMs(),
 		PopPingDropRate:               in.GetPopPingDropRate(),
 		PopPingDropRate5m:             in.GetPopPingDropRate_5M(),
-		PopIpv6PingLatencyMs:          0,
-		PopIpv6PingDropRate:           0,
-		PopIpv6PingDropRate5m:         0,
-		SecsSinceLastPublicIpv4Change: 0,
+		PopIpv6PingLatencyMs:          in.GetPopIpv6PingLatencyMs(),
+		PopIpv6PingDropRate:           in.GetPopIpv6PingDropRate(),
+		PopIpv6PingDropRate5m:         in.GetPopIpv6PingDropRate_5M(),
+		SecsSinceLastPublicIpv4Change: in.GetSecsSinceLastPublicIpv4Change(),
 		DishID:                        in.GetDishId(),
 		UtcNs:                         in.GetUtcNs(),
 		DishDisablementCode:           "",
@@ -220,17 +221,17 @@ func mapConnectedClients(in []*pb.WifiClient) []ClientDevice {
 			Blocked:                      c.GetBlocked(),
 			DhcpLeaseActive:              c.GetDhcpLeaseActive(),
 			DhcpLeaseRenewed:             c.GetDhcpLeaseRenewed(),
-			DhcpLeaseFound:               false,
-			SecondsUntilDhcpLeaseExpires: 0,
+			DhcpLeaseFound:               c.GetDhcpLeaseFound(),
+			SecondsUntilDhcpLeaseExpires: uint32(math.Round(float64(c.GetSecondsUntilDhcpLeaseExpires()))),
 			AssociatedTimeSeconds:        c.GetAssociatedTimeS(),
 			NoDataIdleSeconds:            c.GetNoDataIdleS(),
 			HopsFromController:           c.GetHopsFromController(),
 			ClientID:                     c.GetClientId(),
-			CaptiveClientID:              0,
-			UploadMb:                     0,
-			DownloadMb:                   0,
-			RxStatsValid:                 rxStats != nil,
-			TxStatsValid:                 txStats != nil,
+			CaptiveClientID:              parseCaptiveClientID(c.GetCaptiveClientId()),
+			UploadMb:                     float32(c.GetUploadMb()),
+			DownloadMb:                   float32(c.GetDownloadMb()),
+			RxStatsValid:                 c.GetRxStatsValid() || rxStats != nil,
+			TxStatsValid:                 c.GetTxStatsValid() || txStats != nil,
 			RxBytes:                      rxStats.GetBytes(),
 			TxBytes:                      txStats.GetBytes(),
 			RxNss:                        rxStats.GetNss(),
@@ -588,7 +589,7 @@ func mapRecentRates(rxStats *pb.WifiClient_RxStats, txStats *pb.WifiClient_TxSta
 		txRateMbps:          txStats.GetRateMbps(),
 		rxRateMbpsLast15s:   rxStats.GetRateMbpsLast_15S(),
 		txRateMbpsLast15s:   txStats.GetRateMbpsLast_15S(),
-		rxRateMbpsLast1mAvg: rxStats.GetRateMbpsLast_30S(),
+		rxRateMbpsLast1mAvg: rxStats.GetRateMbpsLast_1MAvg(),
 		txRateMbpsLast30s:   txStats.GetRateMbpsLast_30S(),
 	}
 
@@ -629,4 +630,17 @@ func normalizeEnum(raw string, trimPrefix string) string {
 		normalized = strings.TrimPrefix(normalized, trimPrefix)
 	}
 	return strings.ToLower(normalized)
+}
+
+func parseCaptiveClientID(raw string) uint32 {
+	if raw == "" {
+		return 0
+	}
+
+	n, err := strconv.ParseUint(raw, 10, 32)
+	if err != nil {
+		return 0
+	}
+
+	return uint32(n)
 }

@@ -279,6 +279,30 @@ message WifiClient {
 
   bool dhcp_lease_renewed = 47;
 
+  float seconds_until_dhcp_lease_expires = 48;
+
+  bool dhcp_lease_found = 49;
+
+  reserved 50, 51;
+
+  Alerts alerts = 52;
+
+  string captive_client_id = 53;
+
+  uint32 upload_mb = 54;
+
+  uint32 download_mb = 55;
+
+  CaptiveState captive_state = 56;
+
+  SandboxState sandbox_state = 57;
+
+  bool rx_stats_valid = 60;
+
+  bool tx_stats_valid = 61;
+
+  reserved "authorized", "sandbox_client_id";
+
   repeated string ipv6_addresses = 41;
 
   float signal_strength = 4;
@@ -368,6 +392,10 @@ message WifiClient {
 
     float rate_mbps_last_15s = 15;
 
+    float rate_mbps_last_1m_avg = 16;
+
+    float throughput_mbps_last_1m_avg = 17;
+
     uint32 mcs = 5;
 
     uint32 bandwidth = 6;
@@ -419,6 +447,22 @@ message WifiClient {
     float latency_5m = 4;
   }
 
+  message Alerts {
+    bool throughput_limited = 1;
+  }
+
+  enum CaptiveState {
+    CAPTIVE_STATE_NOT_CONFIGURED = 0;
+
+    CAPTIVE_STATE_UNKNOWN = 1;
+
+    CAPTIVE_STATE_CAPTIVE = 2;
+
+    CAPTIVE_STATE_NOT_CAPTIVE = 3;
+
+    CAPTIVE_STATE_PARTIALLY_CAPTIVE = 4;
+  }
+
   message FqcodelInfo {
     uint64 enqs_hi_prio = 1;
 
@@ -463,6 +507,18 @@ message WifiClient {
     REPEATER = 2;
 
     CONTROLLER = 3;
+  }
+
+  enum SandboxState {
+    SANDBOX_STATE_NOT_CONFIGURED = 0;
+
+    SANDBOX_STATE_UNKNOWN = 1;
+
+    SANDBOX_STATE_SANDBOXED = 2;
+
+    SANDBOX_STATE_UNSANDBOXED = 3;
+
+    SANDBOX_STATE_PARTIALLY_SANDBOXED = 4;
   }
 }
 
@@ -536,7 +592,7 @@ message WifiGetStatusResponse {
 
   DeviceState device_state = 4;
 
-  bool captive_portal_enabled = 1;
+  bool captive_portal_enabled = 1 [deprecated = true];
 
   string ipv4_wan_address = 1003;
 
@@ -589,6 +645,20 @@ message WifiGetStatusResponse {
   int64 utc_ns = 1024;
 
   WifiSoftwareUpdateStats software_update_stats = 1025;
+
+  float pop_ipv6_ping_drop_rate = 1027;
+
+  float pop_ipv6_ping_drop_rate_5m = 1028;
+
+  float pop_ipv6_ping_latency_ms = 1029;
+
+  float secs_since_last_public_ipv4_change = 1030;
+
+  bool using_individualized_calibration = 1032;
+
+  uint32 hops_from_controller = 1034;
+
+  bool no_wan_link = 1035;
 }
 
 message WifiAuthenticateRequest {
