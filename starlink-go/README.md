@@ -11,6 +11,7 @@ Este projeto **não é uma plataforma completa**: ele entrega um cliente enxuto 
 Operações atualmente suportadas:
 
 - `GetStatus(ctx context.Context) (*Status, error)`
+- `GetStatusDetailed(ctx context.Context) (*StatusDetailed, error)`
 - `GetStats(ctx context.Context) (*Stats, error)`
 - `GetLocation(ctx context.Context) (*Location, error)`
 - `GetConnectedClients(ctx context.Context) ([]ClientDevice, error)`
@@ -80,6 +81,45 @@ Campos operacionais adicionais solicitados, mas ainda indisponíveis no protobuf
 - `RxRateMbpsLast1mAvg`
 
 Limitação importante: o schema protobuf atual **não expõe serial do cliente**.
+
+### GetStatusDetailed (get_status detalhado)
+
+`GetStatusDetailed` mantém `GetStatus` enxuto e expõe um snapshot operacional ampliado a partir de `get_status`, sem incluir blobs/config/clients.
+
+Campos do model `StatusDetailed`:
+
+- `DeviceID`
+- `HardwareVersion`
+- `SoftwareVersion`
+- `UptimeSeconds`
+- `Ipv4WanAddress`
+- `Ipv6WanAddresses`
+- `PingLatencyMs`
+- `PingDropRate`
+- `PingDropRate5m`
+- `DishPingLatencyMs`
+- `DishPingDropRate`
+- `DishPingDropRate5m`
+- `PopPingLatencyMs`
+- `PopPingDropRate`
+- `PopPingDropRate5m`
+- `PopIpv6PingLatencyMs`
+- `PopIpv6PingDropRate`
+- `PopIpv6PingDropRate5m`
+- `SecsSinceLastPublicIpv4Change`
+- `DishID`
+- `UtcNs`
+- `DishDisablementCode`
+- `CalibrationPartitionsState`
+- `SetupRequirementState`
+- `SoftwareUpdateState`
+- `SoftwareUpdateRunningVersion`
+- `SoftwareUpdateSecondsSinceGetTargetVersions`
+- `PoeState`
+- `PoePower`
+- `PoeVin`
+
+Observação: alguns campos acima podem permanecer com default (`0`/`""`) quando não estiverem disponíveis no protobuf atual do caminho `wifi_get_status`.
 
 ### GetDhcpLeases (wifi_get_status.dhcp_servers[].leases[])
 

@@ -12,6 +12,40 @@ type Status struct {
 	PopPingLatencyMs      float32
 }
 
+// StatusDetailed is the normalized detailed status snapshot for operational use.
+type StatusDetailed struct {
+	DeviceID                                    string
+	HardwareVersion                             string
+	SoftwareVersion                             string
+	UptimeSeconds                               uint64
+	Ipv4WanAddress                              string
+	Ipv6WanAddresses                            []string
+	PingLatencyMs                               float32
+	PingDropRate                                float32
+	PingDropRate5m                              float32
+	DishPingLatencyMs                           float32
+	DishPingDropRate                            float32
+	DishPingDropRate5m                          float32
+	PopPingLatencyMs                            float32
+	PopPingDropRate                             float32
+	PopPingDropRate5m                           float32
+	PopIpv6PingLatencyMs                        float32
+	PopIpv6PingDropRate                         float32
+	PopIpv6PingDropRate5m                       float32
+	SecsSinceLastPublicIpv4Change               uint32
+	DishID                                      string
+	UtcNs                                       int64
+	DishDisablementCode                         string
+	CalibrationPartitionsState                  string
+	SetupRequirementState                       string
+	SoftwareUpdateState                         string
+	SoftwareUpdateRunningVersion                string
+	SoftwareUpdateSecondsSinceGetTargetVersions float32
+	PoeState                                    string
+	PoePower                                    float32
+	PoeVin                                      float32
+}
+
 // Stats is the normalized domain model for dish history metrics.
 type Stats struct {
 	Current               uint64

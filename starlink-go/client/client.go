@@ -14,6 +14,7 @@ import (
 // StarlinkClient is the minimal monitoring and basic-ops API.
 type StarlinkClient interface {
 	GetStatus(ctx context.Context) (*Status, error)
+	GetStatusDetailed(ctx context.Context) (*StatusDetailed, error)
 	GetStats(ctx context.Context) (*Stats, error)
 	GetLocation(ctx context.Context) (*Location, error)
 	GetConnectedClients(ctx context.Context) ([]ClientDevice, error)
@@ -104,6 +105,24 @@ func (c *grpcClient) GetStatus(ctx context.Context) (*Status, error) {
 		return mapStatus(statusResp.DishGetStatus), nil
 	case *pb.Response_WifiGetStatus:
 		return mapStatusFromWifi(statusResp.WifiGetStatus), nil
+	default:
+		return nil, fmt.Errorf("%w: unexpected response type %T", ErrUnsupported, resp.Response)
+	}
+}
+
+func (c *grpcClient) GetStatusDetailed(ctx context.Context) (*StatusDetailed, error) {
+	resp, err := c.sendWithRetry(ctx, "GetStatusDetailed", func() *pb.Request {
+		return &pb.Request{Request: &pb.Request_GetStatus{GetStatus: &pb.GetStatusRequest{}}}
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	switch statusResp := resp.Response.(type) {
+	case *pb.Response_WifiGetStatus:
+		return mapStatusDetailedFromWifi(statusResp.WifiGetStatus), nil
+	case *pb.Response_DishGetStatus:
+		return mapStatusDetailedFromDish(statusResp.DishGetStatus), nil
 	default:
 		return nil, fmt.Errorf("%w: unexpected response type %T", ErrUnsupported, resp.Response)
 	}

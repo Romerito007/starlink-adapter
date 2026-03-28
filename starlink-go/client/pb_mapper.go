@@ -48,6 +48,99 @@ func mapStatusFromWifi(in *pb.WifiGetStatusResponse) *Status {
 	}
 }
 
+func mapStatusDetailedFromWifi(in *pb.WifiGetStatusResponse) *StatusDetailed {
+	if in == nil {
+		return &StatusDetailed{
+			Ipv6WanAddresses: []string{},
+		}
+	}
+
+	deviceInfo := in.GetDeviceInfo()
+	deviceState := in.GetDeviceState()
+	poe := in.GetPoeStats()
+	sw := in.GetSoftwareUpdateStats()
+
+	ipv6 := append([]string{}, in.GetIpv6WanAddresses()...)
+	sort.Strings(ipv6)
+
+	return &StatusDetailed{
+		DeviceID:                      deviceInfo.GetId(),
+		HardwareVersion:               deviceInfo.GetHardwareVersion(),
+		SoftwareVersion:               deviceInfo.GetSoftwareVersion(),
+		UptimeSeconds:                 deviceState.GetUptimeS(),
+		Ipv4WanAddress:                in.GetIpv4WanAddress(),
+		Ipv6WanAddresses:              ipv6,
+		PingLatencyMs:                 in.GetPingLatencyMs(),
+		PingDropRate:                  in.GetPingDropRate(),
+		PingDropRate5m:                in.GetPingDropRate_5M(),
+		DishPingLatencyMs:             in.GetDishPingLatencyMs(),
+		DishPingDropRate:              in.GetDishPingDropRate(),
+		DishPingDropRate5m:            in.GetDishPingDropRate_5M(),
+		PopPingLatencyMs:              in.GetPopPingLatencyMs(),
+		PopPingDropRate:               in.GetPopPingDropRate(),
+		PopPingDropRate5m:             in.GetPopPingDropRate_5M(),
+		PopIpv6PingLatencyMs:          0,
+		PopIpv6PingDropRate:           0,
+		PopIpv6PingDropRate5m:         0,
+		SecsSinceLastPublicIpv4Change: 0,
+		DishID:                        in.GetDishId(),
+		UtcNs:                         in.GetUtcNs(),
+		DishDisablementCode:           "",
+		CalibrationPartitionsState:    "",
+		SetupRequirementState:         "",
+		SoftwareUpdateState:           normalizeEnum(sw.GetState().String(), ""),
+		SoftwareUpdateRunningVersion:  "",
+		SoftwareUpdateSecondsSinceGetTargetVersions: sw.GetSecondsSinceGetTargetVersions(),
+		PoeState: normalizeEnum(poe.GetPoeState().String(), ""),
+		PoePower: poe.GetPoePower(),
+		PoeVin:   0,
+	}
+}
+
+func mapStatusDetailedFromDish(in *pb.DishGetStatusResponse) *StatusDetailed {
+	if in == nil {
+		return &StatusDetailed{
+			Ipv6WanAddresses: []string{},
+		}
+	}
+
+	deviceInfo := in.GetDeviceInfo()
+	deviceState := in.GetDeviceState()
+
+	return &StatusDetailed{
+		DeviceID:                      deviceInfo.GetId(),
+		HardwareVersion:               deviceInfo.GetHardwareVersion(),
+		SoftwareVersion:               deviceInfo.GetSoftwareVersion(),
+		UptimeSeconds:                 deviceState.GetUptimeS(),
+		Ipv4WanAddress:                "",
+		Ipv6WanAddresses:              []string{},
+		PingLatencyMs:                 0,
+		PingDropRate:                  0,
+		PingDropRate5m:                0,
+		DishPingLatencyMs:             0,
+		DishPingDropRate:              0,
+		DishPingDropRate5m:            0,
+		PopPingLatencyMs:              in.GetPopPingLatencyMs(),
+		PopPingDropRate:               in.GetPopPingDropRate(),
+		PopPingDropRate5m:             0,
+		PopIpv6PingLatencyMs:          0,
+		PopIpv6PingDropRate:           0,
+		PopIpv6PingDropRate5m:         0,
+		SecsSinceLastPublicIpv4Change: 0,
+		DishID:                        "",
+		UtcNs:                         0,
+		DishDisablementCode:           normalizeEnum(in.GetDisablementCode().String(), ""),
+		CalibrationPartitionsState:    "",
+		SetupRequirementState:         "",
+		SoftwareUpdateState:           normalizeEnum(in.GetSoftwareUpdateState().String(), ""),
+		SoftwareUpdateRunningVersion:  "",
+		SoftwareUpdateSecondsSinceGetTargetVersions: 0,
+		PoeState: "",
+		PoePower: 0,
+		PoeVin:   0,
+	}
+}
+
 func mapStats(in *pb.DishGetHistoryResponse) *Stats {
 	if in == nil {
 		return &Stats{}
