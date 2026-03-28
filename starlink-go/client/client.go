@@ -154,6 +154,29 @@ func (c *grpcClient) Reboot(ctx context.Context) error {
 
 func (c *grpcClient) GetConnectedClients(ctx context.Context) ([]ClientDevice, error) {
 	resp, err := c.sendWithRetry(ctx, "GetConnectedClients", func() *pb.Request {
+		return &pb.Request{Request: &pb.Request_GetStatus{GetStatus: &pb.GetStatusRequest{}}}
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	switch clientsResp := resp.Response.(type) {
+	case *pb.Response_WifiGetStatus:
+		if clientsResp.WifiGetStatus == nil {
+			return []ClientDevice{}, nil
+		}
+		return mapConnectedClients(clientsResp.WifiGetStatus.GetClients()), nil
+	case *pb.Response_DishGetStatus:
+		// Fallback path for endpoints that do not expose wifi_get_status clients
+		// in get_status responses.
+		return c.getConnectedClientsViaWifiGetClients(ctx)
+	default:
+		return nil, fmt.Errorf("%w: unexpected response type %T", ErrUnsupported, resp.Response)
+	}
+}
+
+func (c *grpcClient) getConnectedClientsViaWifiGetClients(ctx context.Context) ([]ClientDevice, error) {
+	resp, err := c.sendWithRetry(ctx, "GetConnectedClients.WifiGetClientsFallback", func() *pb.Request {
 		return &pb.Request{Request: &pb.Request_WifiGetClients{WifiGetClients: &pb.WifiGetClientsRequest{}}}
 	})
 	if err != nil {
@@ -162,7 +185,7 @@ func (c *grpcClient) GetConnectedClients(ctx context.Context) ([]ClientDevice, e
 
 	clientsResp, ok := resp.Response.(*pb.Response_WifiGetClients)
 	if !ok {
-		return nil, fmt.Errorf("%w: unexpected response type %T", ErrUnsupported, resp.Response)
+		return nil, fmt.Errorf("%w: unexpected fallback response type %T", ErrUnsupported, resp.Response)
 	}
 	if clientsResp.WifiGetClients == nil {
 		return []ClientDevice{}, nil

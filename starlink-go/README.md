@@ -17,15 +17,17 @@ Operações atualmente suportadas:
 - `Reboot(ctx context.Context) error`
 - `Close() error`
 
-### GetConnectedClients (wifi_get_clients)
+### GetConnectedClients (wifi_get_status.clients com fallback)
 
-O adapter consulta `wifi_get_clients` e retorna uma lista normalizada de clientes conectados (`[]ClientDevice`).
+O adapter consulta `get_status` e, quando o endpoint responde com `wifi_get_status`, usa `wifi_get_status.clients` como fonte primária para retornar uma lista normalizada de clientes conectados (`[]ClientDevice`).
+
+Para compatibilidade com endpoints legados, existe fallback interno para `wifi_get_clients`.
 
 Campos atualmente mapeados:
 
 - `MacAddress`
 - `IpAddress`
-- `Interface` (string normalizada do enum, ex.: `ETH`, `RF_2GHZ`, `RF_5GHZ`, `RF_5GHZ_HIGH`)
+- `Interface` (string normalizada legível, ex.: `eth`, `rf_2ghz`, `rf_5ghz`, `rf_5ghz_high`)
 - `SignalStrength`
 - `AssociatedTimeSeconds`
 - `Name`
@@ -41,10 +43,37 @@ Campos atualmente mapeados:
 - `Role`
 - `InterfaceName`
 - `NoDataIdleSeconds`
+- `UpstreamMacAddress`
+- `HopsFromController`
+- `ClientID`
 - `RxRateMbps`
 - `TxRateMbps`
 - `RxRateMbpsLast15s`
 - `TxRateMbpsLast15s`
+- `TxRateMbpsLast30s`
+- `RxBytes`
+- `TxBytes`
+- `RxNss`
+- `TxNss`
+- `RxMcs`
+- `TxMcs`
+- `RxBandwidth`
+- `TxBandwidth`
+- `RxGuardNs`
+- `TxGuardNs`
+- `RxPhyMode`
+- `TxPhyMode`
+- `RxStatsValid`
+- `TxStatsValid`
+
+Campos operacionais adicionais solicitados, mas ainda indisponíveis no protobuf atual, permanecem com default zero/false na model pública:
+
+- `DhcpLeaseFound`
+- `SecondsUntilDhcpLeaseExpires`
+- `CaptiveClientID`
+- `UploadMb`
+- `DownloadMb`
+- `RxRateMbpsLast1mAvg`
 
 Limitação importante: o schema protobuf atual **não expõe serial do cliente**.
 
