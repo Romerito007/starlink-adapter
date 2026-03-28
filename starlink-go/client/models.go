@@ -85,7 +85,7 @@ type ClientDevice struct {
 	NoDataIdleSeconds            uint32
 	HopsFromController           uint32
 	ClientID                     uint32
-	CaptiveClientID              uint32
+	CaptiveClientID              string
 	UploadMb                     float32
 	DownloadMb                   float32
 	RxStatsValid                 bool
