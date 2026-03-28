@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package SpaceX.API.Device.Services.Unlock;
 
+option go_package = "github.com/Romerito007/starlink-adapter/starlink-go/proto/gen/spacex/api/device/services/unlock;unlock";
+
 message UnlockChallenge {
   reserved 3;
 

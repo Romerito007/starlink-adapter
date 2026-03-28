@@ -32,7 +32,7 @@ type StatusDetailed struct {
 	PopIpv6PingLatencyMs                        float32
 	PopIpv6PingDropRate                         float32
 	PopIpv6PingDropRate5m                       float32
-	SecsSinceLastPublicIpv4Change               uint32
+	SecsSinceLastPublicIpv4Change               float32
 	DishID                                      string
 	UtcNs                                       int64
 	DishDisablementCode                         string

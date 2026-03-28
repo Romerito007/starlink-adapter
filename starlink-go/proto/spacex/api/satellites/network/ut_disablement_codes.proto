@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package SpaceX.API.Satellites.Network;
 
+option go_package = "github.com/Romerito007/starlink-adapter/starlink-go/proto/gen/spacex/api/satellites/network;satellitesnetwork";
+
 enum UtDisablementCode {
   UNKNOWN_STATE = 0;
 

@@ -4,3 +4,5 @@ plugins:
     out: gen
     opt:
       - paths=source_relative
+      - Mgoogle/protobuf/timestamp.proto=google.golang.org/protobuf/types/known/timestamppb
+      - Mgoogle/protobuf/wrappers.proto=google.golang.org/protobuf/types/known/wrapperspb

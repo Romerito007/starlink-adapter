@@ -222,7 +222,7 @@ func main() {
 	fmt.Printf("pop_ipv6_ping_latency_ms=%.6f\n", detailed.PopIpv6PingLatencyMs)
 	fmt.Printf("pop_ipv6_ping_drop_rate=%.6f\n", detailed.PopIpv6PingDropRate)
 	fmt.Printf("pop_ipv6_ping_drop_rate_5m=%.6f\n", detailed.PopIpv6PingDropRate5m)
-	fmt.Printf("secs_since_last_public_ipv4_change=%d\n", detailed.SecsSinceLastPublicIpv4Change)
+	fmt.Printf("secs_since_last_public_ipv4_change=%.6f\n", detailed.SecsSinceLastPublicIpv4Change)
 	fmt.Printf("dish_id=%q\n", detailed.DishID)
 	fmt.Printf("utc_ns=%d\n", detailed.UtcNs)
 	fmt.Printf("dish_disablement_code=%q\n", detailed.DishDisablementCode)

@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package SpaceX.API.Telemetron.Public.Common;
 
+option go_package = "github.com/Romerito007/starlink-adapter/starlink-go/proto/gen/spacex/api/telemetron/public/common;common";
+
 message TimestampInfo {
   Epoch epoch = 1;
 
