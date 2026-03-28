@@ -14,6 +14,7 @@ Operações atualmente suportadas:
 - `GetStats(ctx context.Context) (*Stats, error)`
 - `GetLocation(ctx context.Context) (*Location, error)`
 - `GetConnectedClients(ctx context.Context) ([]ClientDevice, error)`
+- `GetDhcpLeases(ctx context.Context) ([]DhcpLease, error)`
 - `Reboot(ctx context.Context) error`
 - `Close() error`
 
@@ -76,6 +77,22 @@ Campos operacionais adicionais solicitados, mas ainda indisponíveis no protobuf
 - `RxRateMbpsLast1mAvg`
 
 Limitação importante: o schema protobuf atual **não expõe serial do cliente**.
+
+### GetDhcpLeases (wifi_get_status.dhcp_servers[].leases[])
+
+O adapter consulta `get_status` e extrai leases DHCP a partir de `wifi_get_status.dhcp_servers[].leases[]`, retornando `[]DhcpLease` sem expor tipos protobuf.
+
+Campos do model `DhcpLease`:
+
+- `IpAddress`
+- `MacAddress`
+- `Hostname`
+- `ExpiresTime`
+- `Active`
+- `ClientID`
+- `Domain` (herdado de `dhcp_servers[].domain`)
+
+A saída é estável e ordenada por `domain + ip_address + mac_address`.
 
 ## 2) Como a conectividade funciona
 

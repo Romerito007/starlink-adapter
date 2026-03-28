@@ -79,3 +79,14 @@ type ClientDevice struct {
 	Domain                       string
 	Ipv6Addresses                []string
 }
+
+// DhcpLease is the normalized domain model for a DHCP lease entry.
+type DhcpLease struct {
+	IpAddress   string
+	MacAddress  string
+	Hostname    string
+	ExpiresTime string
+	Active      bool
+	ClientID    uint32
+	Domain      string
+}

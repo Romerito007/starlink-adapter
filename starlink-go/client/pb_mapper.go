@@ -171,6 +171,56 @@ func mapConnectedClients(in []*pb.WifiClient) []ClientDevice {
 	return out
 }
 
+func mapDhcpLeases(in []*pb.DhcpServer) []DhcpLease {
+	if len(in) == 0 {
+		return []DhcpLease{}
+	}
+
+	out := make([]DhcpLease, 0)
+	for _, server := range in {
+		if server == nil {
+			continue
+		}
+
+		domain := server.GetDomain()
+		for _, lease := range server.GetLeases() {
+			if lease == nil {
+				continue
+			}
+
+			out = append(out, DhcpLease{
+				IpAddress:   lease.GetIpAddress(),
+				MacAddress:  lease.GetMacAddress(),
+				Hostname:    lease.GetHostname(),
+				ExpiresTime: lease.GetExpiresTime(),
+				Active:      lease.GetActive(),
+				ClientID:    lease.GetClientId(),
+				Domain:      domain,
+			})
+		}
+	}
+
+	sort.Slice(out, func(i, j int) bool {
+		leftDomain := strings.ToLower(out[i].Domain)
+		rightDomain := strings.ToLower(out[j].Domain)
+		if leftDomain != rightDomain {
+			return leftDomain < rightDomain
+		}
+
+		leftIP := strings.ToLower(out[i].IpAddress)
+		rightIP := strings.ToLower(out[j].IpAddress)
+		if leftIP != rightIP {
+			return leftIP < rightIP
+		}
+
+		leftMAC := strings.ToLower(out[i].MacAddress)
+		rightMAC := strings.ToLower(out[j].MacAddress)
+		return leftMAC < rightMAC
+	})
+
+	return out
+}
+
 type recentRates struct {
 	rxRateMbps          uint32
 	txRateMbps          uint32
