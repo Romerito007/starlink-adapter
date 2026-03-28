@@ -14,18 +14,23 @@ Operações atualmente suportadas:
 - `GetStats(ctx context.Context) (*Stats, error)`
 - `GetLocation(ctx context.Context) (*Location, error)`
 - `GetConnectedClients(ctx context.Context) ([]ClientDevice, error)`
+- `GetDhcpLeases(ctx context.Context) ([]DhcpLease, error)`
+- `GetWifiConfig(ctx context.Context) (*WifiConfigSnapshot, error)`
+- `GetNetworkInterfaces(ctx context.Context) ([]NetworkInterfaceSnapshot, error)`
 - `Reboot(ctx context.Context) error`
 - `Close() error`
 
-### GetConnectedClients (wifi_get_clients)
+### GetConnectedClients (wifi_get_status.clients com fallback)
 
-O adapter consulta `wifi_get_clients` e retorna uma lista normalizada de clientes conectados (`[]ClientDevice`).
+O adapter consulta `get_status` e, quando o endpoint responde com `wifi_get_status`, usa `wifi_get_status.clients` como fonte primária para retornar uma lista normalizada de clientes conectados (`[]ClientDevice`).
+
+Para compatibilidade com endpoints legados, existe fallback interno para `wifi_get_clients`.
 
 Campos atualmente mapeados:
 
 - `MacAddress`
 - `IpAddress`
-- `Interface` (string normalizada do enum, ex.: `ETH`, `RF_2GHZ`, `RF_5GHZ`, `RF_5GHZ_HIGH`)
+- `Interface` (string normalizada legível, ex.: `eth`, `rf_2ghz`, `rf_5ghz`, `rf_5ghz_high`)
 - `SignalStrength`
 - `AssociatedTimeSeconds`
 - `Name`
@@ -41,12 +46,119 @@ Campos atualmente mapeados:
 - `Role`
 - `InterfaceName`
 - `NoDataIdleSeconds`
+- `UpstreamMacAddress`
+- `HopsFromController`
+- `ClientID`
 - `RxRateMbps`
 - `TxRateMbps`
 - `RxRateMbpsLast15s`
 - `TxRateMbpsLast15s`
+- `TxRateMbpsLast30s`
+- `RxBytes`
+- `TxBytes`
+- `RxNss`
+- `TxNss`
+- `RxMcs`
+- `TxMcs`
+- `RxBandwidth`
+- `TxBandwidth`
+- `RxGuardNs`
+- `TxGuardNs`
+- `RxPhyMode`
+- `TxPhyMode`
+- `RxStatsValid`
+- `TxStatsValid`
+
+Campos operacionais adicionais solicitados, mas ainda indisponíveis no protobuf atual, permanecem com default zero/false na model pública:
+
+- `DhcpLeaseFound`
+- `SecondsUntilDhcpLeaseExpires`
+- `CaptiveClientID`
+- `UploadMb`
+- `DownloadMb`
+- `RxRateMbpsLast1mAvg`
 
 Limitação importante: o schema protobuf atual **não expõe serial do cliente**.
+
+### GetDhcpLeases (wifi_get_status.dhcp_servers[].leases[])
+
+O adapter consulta `get_status` e extrai leases DHCP a partir de `wifi_get_status.dhcp_servers[].leases[]`, retornando `[]DhcpLease` sem expor tipos protobuf.
+
+Campos do model `DhcpLease`:
+
+- `IpAddress`
+- `MacAddress`
+- `Hostname`
+- `ExpiresTime`
+- `Active`
+- `ClientID`
+- `Domain` (herdado de `dhcp_servers[].domain`)
+
+A saída é estável e ordenada por `domain + ip_address + mac_address`.
+
+### GetWifiConfig (wifi_get_config)
+
+O adapter consulta `wifi_get_config` e retorna um snapshot público/normalizado de configuração Wi-Fi/LAN sem expor protobuf e sem expor campos sensíveis (como senha).
+
+Modelos públicos:
+
+- `WifiConfigSnapshot`
+  - `CountryCode`
+  - `SetupComplete`
+  - `MacWan`
+  - `MacLan`
+  - `BootCount`
+  - `Incarnation`
+  - `WanHostDscpMark`
+  - `Networks []WifiNetwork`
+- `WifiNetwork`
+  - `Ipv4`
+  - `Domain`
+  - `Dhcpv4Start`
+  - `Dhcpv4End` (mantido no model público; no protobuf atual fica `0`)
+  - `Dhcpv4LeaseDurationSeconds`
+  - `Vlan`
+  - `BasicServiceSets []WifiBasicServiceSet`
+- `WifiBasicServiceSet`
+  - `Bssid`
+  - `Ssid`
+  - `Band` (string legível normalizada)
+  - `InterfaceName`
+
+A saída de redes e BSS também é estável e ordenada.
+
+### GetNetworkInterfaces (get_network_interfaces)
+
+O adapter consulta `get_network_interfaces` e retorna um inventário normalizado de interfaces de rede do roteador (`[]NetworkInterfaceSnapshot`), sem expor protobuf.
+
+Campos públicos:
+
+- `NetworkInterfaceSnapshot`
+  - `Name`
+  - `Up`
+  - `MacAddress`
+  - `Ipv4Addresses`
+  - `Ipv6Addresses`
+  - `RxStats`
+  - `TxStats`
+  - `Ethernet`
+  - `Wifi`
+  - `Bridge`
+- `InterfaceTrafficStats`
+  - `Bytes`
+  - `Packets`
+- `InterfaceEthernetInfo`
+  - `LinkDetected`
+  - `SpeedMbps`
+  - `AutonegotiationOn`
+  - `Duplex` (string legível normalizada)
+- `InterfaceWifiInfo`
+  - `Channel`
+  - `LinkQuality`
+- `InterfaceBridgeInfo`
+  - `MemberNames`
+
+Subestruturas (`Ethernet`, `Wifi`, `Bridge`) são opcionais e nil-safe. A saída é estável e ordenada por `name`.
 
 ## 2) Como a conectividade funciona
 
