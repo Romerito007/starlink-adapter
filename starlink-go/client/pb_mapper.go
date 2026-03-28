@@ -98,6 +98,7 @@ func mapConnectedClients(in []*pb.WifiClient) []ClientDevice {
 		sort.Strings(ipv6)
 		rxStats := c.GetRxStats()
 		txStats := c.GetTxStats()
+		rates := mapRecentRates(rxStats, txStats)
 
 		out = append(out, ClientDevice{
 			MacAddress:                   c.GetMacAddress(),
@@ -134,14 +135,14 @@ func mapConnectedClients(in []*pb.WifiClient) []ClientDevice {
 			TxBandwidth:                  txStats.GetBandwidth(),
 			RxGuardNs:                    rxStats.GetGuardNs(),
 			TxGuardNs:                    txStats.GetGuardNs(),
-			RxRateMbps:                   rxStats.GetRateMbps(),
-			TxRateMbps:                   txStats.GetRateMbps(),
+			RxRateMbps:                   rates.rxRateMbps,
+			TxRateMbps:                   rates.txRateMbps,
 			RxPhyMode:                    rxStats.GetPhyMode(),
 			TxPhyMode:                    txStats.GetPhyMode(),
-			RxRateMbpsLast15s:            rxStats.GetRateMbpsLast_15S(),
-			TxRateMbpsLast15s:            txStats.GetRateMbpsLast_15S(),
-			RxRateMbpsLast1mAvg:          0,
-			TxRateMbpsLast30s:            txStats.GetRateMbpsLast_30S(),
+			RxRateMbpsLast15s:            rates.rxRateMbpsLast15s,
+			TxRateMbpsLast15s:            rates.txRateMbpsLast15s,
+			RxRateMbpsLast1mAvg:          rates.rxRateMbpsLast1mAvg,
+			TxRateMbpsLast30s:            rates.txRateMbpsLast30s,
 			Name:                         c.GetName(),
 			GivenName:                    c.GetGivenName(),
 			Domain:                       c.GetDomain(),
@@ -168,6 +169,52 @@ func mapConnectedClients(in []*pb.WifiClient) []ClientDevice {
 	})
 
 	return out
+}
+
+type recentRates struct {
+	rxRateMbps          uint32
+	txRateMbps          uint32
+	rxRateMbpsLast15s   float32
+	txRateMbpsLast15s   float32
+	rxRateMbpsLast1mAvg float32
+	txRateMbpsLast30s   float32
+}
+
+func mapRecentRates(rxStats *pb.WifiClient_RxStats, txStats *pb.WifiClient_TxStats) recentRates {
+	rates := recentRates{
+		rxRateMbps:          rxStats.GetRateMbps(),
+		txRateMbps:          txStats.GetRateMbps(),
+		rxRateMbpsLast15s:   rxStats.GetRateMbpsLast_15S(),
+		txRateMbpsLast15s:   txStats.GetRateMbpsLast_15S(),
+		rxRateMbpsLast1mAvg: rxStats.GetRateMbpsLast_30S(),
+		txRateMbpsLast30s:   txStats.GetRateMbpsLast_30S(),
+	}
+
+	// Fallbacks keep recent-rate output useful when one of the near-term windows
+	// is absent in a specific payload/firmware variation.
+	if rates.rxRateMbpsLast15s == 0 && rates.rxRateMbps > 0 {
+		rates.rxRateMbpsLast15s = float32(rates.rxRateMbps)
+	}
+	if rates.txRateMbpsLast15s == 0 && rates.txRateMbpsLast30s > 0 {
+		rates.txRateMbpsLast15s = rates.txRateMbpsLast30s
+	}
+	if rates.txRateMbpsLast15s == 0 && rates.txRateMbps > 0 {
+		rates.txRateMbpsLast15s = float32(rates.txRateMbps)
+	}
+	if rates.rxRateMbpsLast1mAvg == 0 && rates.rxRateMbpsLast15s > 0 {
+		rates.rxRateMbpsLast1mAvg = rates.rxRateMbpsLast15s
+	}
+	if rates.txRateMbpsLast30s == 0 && rates.txRateMbpsLast15s > 0 {
+		rates.txRateMbpsLast30s = rates.txRateMbpsLast15s
+	}
+	if rates.rxRateMbps == 0 && rates.rxRateMbpsLast15s > 0 {
+		rates.rxRateMbps = uint32(rates.rxRateMbpsLast15s)
+	}
+	if rates.txRateMbps == 0 && rates.txRateMbpsLast15s > 0 {
+		rates.txRateMbps = uint32(rates.txRateMbpsLast15s)
+	}
+
+	return rates
 }
 
 func normalizeEnum(raw string, trimPrefix string) string {

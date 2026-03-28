@@ -208,8 +208,11 @@ func TestGetConnectedClients_RequestAndMapping(t *testing.T) {
 		t.Fatalf("unexpected tx 30s mapping: %+v", first)
 	}
 	if first.CaptiveClientID != 0 || first.UploadMb != 0 || first.DownloadMb != 0 ||
-		first.DhcpLeaseFound || first.SecondsUntilDhcpLeaseExpires != 0 || first.RxRateMbpsLast1mAvg != 0 {
+		first.DhcpLeaseFound || first.SecondsUntilDhcpLeaseExpires != 0 {
 		t.Fatalf("unexpected defaults for unsupported fields: %+v", first)
+	}
+	if first.RxRateMbpsLast1mAvg != 900.5 {
+		t.Fatalf("unexpected rx 1m avg mapping: %+v", first)
 	}
 	if len(first.Ipv6Addresses) != 2 || first.Ipv6Addresses[0] != "2001::1" || first.Ipv6Addresses[1] != "2001::2" {
 		t.Fatalf("unexpected sorted Ipv6Addresses: %#v", first.Ipv6Addresses)
@@ -315,6 +318,57 @@ func TestGetConnectedClients_FallbacksToWifiGetClients(t *testing.T) {
 	}
 	if tr.requests[0].GetGetStatus() == nil || tr.requests[1].GetWifiGetClients() == nil {
 		t.Fatalf("unexpected request sequence for fallback: %#v", tr.requests)
+	}
+}
+
+func TestGetConnectedClients_RateFallbacksWhenRecentWindowsMissing(t *testing.T) {
+	tr := &fakeTransport{
+		handleFn: func(ctx context.Context, req *pb.Request) (*pb.Response, error) {
+			return &pb.Response{
+				Response: &pb.Response_WifiGetStatus{
+					WifiGetStatus: &pb.WifiGetStatusResponse{
+						Clients: []*pb.WifiClient{
+							{
+								MacAddress: "AA:BB:CC:DD:EE:FF",
+								RxStats: &pb.WifiClient_RxStats{
+									RateMbps: 72,
+								},
+								TxStats: &pb.WifiClient_TxStats{
+									RateMbps:         72,
+									RateMbpsLast_30S: 10.466666,
+								},
+							},
+						},
+					},
+				},
+			}, nil
+		},
+	}
+
+	c := newTestClient(t, tr)
+	got, err := c.GetConnectedClients(context.Background())
+	if err != nil {
+		t.Fatalf("GetConnectedClients() unexpected error: %v", err)
+	}
+	if len(got) != 1 {
+		t.Fatalf("expected 1 client, got %d", len(got))
+	}
+
+	client := got[0]
+	if client.RxRateMbps != 72 || client.TxRateMbps != 72 {
+		t.Fatalf("unexpected current rate mapping: %+v", client)
+	}
+	if client.RxRateMbpsLast15s != 72 {
+		t.Fatalf("expected rx last15 fallback to current rate, got %+v", client)
+	}
+	if client.RxRateMbpsLast1mAvg != 72 {
+		t.Fatalf("expected rx last1m avg fallback, got %+v", client)
+	}
+	if client.TxRateMbpsLast30s != 10.466666 {
+		t.Fatalf("expected tx last30 direct mapping, got %+v", client)
+	}
+	if client.TxRateMbpsLast15s != 10.466666 {
+		t.Fatalf("expected tx last15 fallback to last30, got %+v", client)
 	}
 }
 
