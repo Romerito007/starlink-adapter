@@ -11,21 +11,28 @@ Este projeto **não é uma plataforma completa**: ele entrega um cliente enxuto 
 Operações atualmente suportadas:
 
 - `GetStatus(ctx context.Context) (*Status, error)`
+- `GetStatusDetailed(ctx context.Context) (*StatusDetailed, error)`
 - `GetStats(ctx context.Context) (*Stats, error)`
 - `GetLocation(ctx context.Context) (*Location, error)`
 - `GetConnectedClients(ctx context.Context) ([]ClientDevice, error)`
+- `GetDhcpLeases(ctx context.Context) ([]DhcpLease, error)`
+- `GetWifiConfig(ctx context.Context) (*WifiConfigSnapshot, error)`
+- `GetNetworkInterfaces(ctx context.Context) ([]NetworkInterfaceSnapshot, error)`
+- `GetRadioStats(ctx context.Context) ([]RadioStat, error)`
 - `Reboot(ctx context.Context) error`
 - `Close() error`
 
-### GetConnectedClients (wifi_get_clients)
+### GetConnectedClients (wifi_get_status.clients com fallback)
 
-O adapter consulta `wifi_get_clients` e retorna uma lista normalizada de clientes conectados (`[]ClientDevice`).
+O adapter consulta `get_status` e, quando o endpoint responde com `wifi_get_status`, usa `wifi_get_status.clients` como fonte primária para retornar uma lista normalizada de clientes conectados (`[]ClientDevice`).
+
+Para compatibilidade com endpoints legados, existe fallback interno para `wifi_get_clients`.
 
 Campos atualmente mapeados:
 
 - `MacAddress`
 - `IpAddress`
-- `Interface` (string normalizada do enum, ex.: `ETH`, `RF_2GHZ`, `RF_5GHZ`, `RF_5GHZ_HIGH`)
+- `Interface` (string normalizada legível, ex.: `eth`, `rf_2ghz`, `rf_5ghz`, `rf_5ghz_high`)
 - `SignalStrength`
 - `AssociatedTimeSeconds`
 - `Name`
@@ -41,12 +48,189 @@ Campos atualmente mapeados:
 - `Role`
 - `InterfaceName`
 - `NoDataIdleSeconds`
+- `UpstreamMacAddress`
+- `HopsFromController`
+- `ClientID`
 - `RxRateMbps`
 - `TxRateMbps`
 - `RxRateMbpsLast15s`
 - `TxRateMbpsLast15s`
+- `TxRateMbpsLast30s`
+- `RxBytes`
+- `TxBytes`
+- `RxNss`
+- `TxNss`
+- `RxMcs`
+- `TxMcs`
+- `RxBandwidth`
+- `TxBandwidth`
+- `RxGuardNs`
+- `TxGuardNs`
+- `RxPhyMode`
+- `TxPhyMode`
+- `RxStatsValid`
+- `TxStatsValid`
+
+Campos operacionais adicionais solicitados, mas ainda indisponíveis no protobuf atual, permanecem com default zero/false na model pública:
+
+- `DhcpLeaseFound`
+- `SecondsUntilDhcpLeaseExpires`
+- `CaptiveClientID`
+- `UploadMb`
+- `DownloadMb`
+- `RxRateMbpsLast1mAvg`
 
 Limitação importante: o schema protobuf atual **não expõe serial do cliente**.
+
+### GetStatusDetailed (get_status detalhado)
+
+`GetStatusDetailed` mantém `GetStatus` enxuto e expõe um snapshot operacional ampliado a partir de `get_status`, sem incluir blobs/config/clients.
+
+Campos do model `StatusDetailed`:
+
+- `DeviceID`
+- `HardwareVersion`
+- `SoftwareVersion`
+- `UptimeSeconds`
+- `Ipv4WanAddress`
+- `Ipv6WanAddresses`
+- `PingLatencyMs`
+- `PingDropRate`
+- `PingDropRate5m`
+- `DishPingLatencyMs`
+- `DishPingDropRate`
+- `DishPingDropRate5m`
+- `PopPingLatencyMs`
+- `PopPingDropRate`
+- `PopPingDropRate5m`
+- `PopIpv6PingLatencyMs`
+- `PopIpv6PingDropRate`
+- `PopIpv6PingDropRate5m`
+- `SecsSinceLastPublicIpv4Change`
+- `DishID`
+- `UtcNs`
+- `DishDisablementCode`
+- `CalibrationPartitionsState`
+- `SetupRequirementState`
+- `SoftwareUpdateState`
+- `SoftwareUpdateRunningVersion`
+- `SoftwareUpdateSecondsSinceGetTargetVersions`
+- `PoeState`
+- `PoePower`
+- `PoeVin`
+
+Observação: alguns campos acima podem permanecer com default (`0`/`""`) quando não estiverem disponíveis no protobuf atual do caminho `wifi_get_status`.
+
+### GetDhcpLeases (wifi_get_status.dhcp_servers[].leases[])
+
+O adapter consulta `get_status` e extrai leases DHCP a partir de `wifi_get_status.dhcp_servers[].leases[]`, retornando `[]DhcpLease` sem expor tipos protobuf.
+
+Campos do model `DhcpLease`:
+
+- `IpAddress`
+- `MacAddress`
+- `Hostname`
+- `ExpiresTime`
+- `Active`
+- `ClientID`
+- `Domain` (herdado de `dhcp_servers[].domain`)
+
+A saída é estável e ordenada por `domain + ip_address + mac_address`.
+
+### GetWifiConfig (wifi_get_config)
+
+O adapter consulta `wifi_get_config` e retorna um snapshot público/normalizado de configuração Wi-Fi/LAN sem expor protobuf e sem expor campos sensíveis (como senha).
+
+Modelos públicos:
+
+- `WifiConfigSnapshot`
+  - `CountryCode`
+  - `SetupComplete`
+  - `MacWan`
+  - `MacLan`
+  - `BootCount`
+  - `Incarnation`
+  - `WanHostDscpMark`
+  - `Networks []WifiNetwork`
+- `WifiNetwork`
+  - `Ipv4`
+  - `Domain`
+  - `Dhcpv4Start`
+  - `Dhcpv4End` (mantido no model público; no protobuf atual fica `0`)
+  - `Dhcpv4LeaseDurationSeconds`
+  - `Vlan`
+  - `BasicServiceSets []WifiBasicServiceSet`
+- `WifiBasicServiceSet`
+  - `Bssid`
+  - `Ssid`
+  - `Band` (string legível normalizada)
+  - `InterfaceName`
+
+A saída de redes e BSS também é estável e ordenada.
+
+### GetNetworkInterfaces (get_network_interfaces)
+
+O adapter consulta `get_network_interfaces` e retorna um inventário normalizado de interfaces de rede do roteador (`[]NetworkInterfaceSnapshot`), sem expor protobuf.
+
+Campos públicos:
+
+- `NetworkInterfaceSnapshot`
+  - `Name`
+  - `Up`
+  - `MacAddress`
+  - `Ipv4Addresses`
+  - `Ipv6Addresses`
+  - `RxStats`
+  - `TxStats`
+  - `Ethernet`
+  - `Wifi`
+  - `Bridge`
+- `InterfaceTrafficStats`
+  - `Bytes`
+  - `Packets`
+- `InterfaceEthernetInfo`
+  - `LinkDetected`
+  - `SpeedMbps`
+  - `AutonegotiationOn`
+  - `Duplex` (string legível normalizada)
+- `InterfaceWifiInfo`
+  - `Channel`
+  - `LinkQuality`
+- `InterfaceBridgeInfo`
+  - `MemberNames`
+
+Subestruturas (`Ethernet`, `Wifi`, `Bridge`) são opcionais e nil-safe. A saída é estável e ordenada por `name`.
+
+### GetRadioStats (get_radio_stats)
+
+O adapter consulta `get_radio_stats` e retorna saúde básica por banda em `[]RadioStat`.
+
+Modelos públicos:
+
+- `RadioStat`
+  - `Band`
+  - `RxStats`
+  - `TxStats`
+  - `ThermalStatus`
+  - `AntennaStatus`
+- `RadioTrafficStats`
+  - `Packets`
+  - `FrameErrors`
+- `RadioThermalStatus`
+  - `Temp`
+  - `DutyCycle`
+- `RadioAntennaStatus`
+  - `Rssi1`
+  - `Rssi2`
+  - `Rssi3`
+  - `Rssi4`
+
+Estratégia para NaN:
+
+- Campos float com `NaN` vindos do payload (`thermal_status.temp2` e `antenna_status.rssi*`) são normalizados para `0` antes de expor no model público.
+- Motivo: facilitar serialização/consumo downstream com comportamento determinístico.
+
+A saída é estável e ordenada por `band`.
 
 ## 2) Como a conectividade funciona
 
